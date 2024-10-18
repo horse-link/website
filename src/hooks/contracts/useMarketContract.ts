@@ -71,8 +71,8 @@ export const useMarketContract = () => {
     );
 
     // find which need to be increased
-    const toProcess = marketMultiBetInfoList.filter(a =>
-      a.allowance < a.totalWagers
+    const toProcess = marketMultiBetInfoList.filter(
+      a => a.allowance < a.totalWagers
     );
 
     // trigger allowances
@@ -161,22 +161,15 @@ export const useMarketContract = () => {
       );
       if (userAllowance < wager) {
         const [gasLimit, gasPrice] = await Promise.all([
-          erc20Contract.estimateGas.approve(
-            market.address,
-            ethers.MaxUint256
-          ),
+          erc20Contract.estimateGas.approve(market.address, ethers.MaxUint256),
           signer.getGasPrice()
         ]);
 
         await (
-          await erc20Contract.approve(
-            market.address,
-            ethers.MaxUint256,
-            {
-              gasLimit,
-              gasPrice
-            }
-          )
+          await erc20Contract.approve(market.address, ethers.MaxUint256, {
+            gasLimit,
+            gasPrice
+          })
         ).wait();
       }
     }

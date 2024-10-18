@@ -2,14 +2,14 @@ import React from "react";
 import classNames from "classnames";
 import { Link, useLocation } from "react-router-dom";
 import { NavbarRouting } from "../Routing";
-import { useNetwork } from "wagmi";
-import { sepolia } from "@wagmi/chains";
+import { useAccount } from "wagmi";
+import { sepolia } from "wagmi/chains";
 
 export const Navbar: React.FC = () => {
   const { pathname } = useLocation();
   const currentPath = pathname.split("/", 2).join("/");
 
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const isTestnet = chain?.id === sepolia.id;
 
   const Routes = NavbarRouting.filter(r => {

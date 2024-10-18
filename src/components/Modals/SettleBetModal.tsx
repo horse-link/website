@@ -17,6 +17,7 @@ import { Button } from "../Buttons";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { formatting } from "horselink-sdk";
+import { ErrorCode } from "ethers";
 
 dayjs.extend(advancedFormat);
 
@@ -35,7 +36,7 @@ export const SettleBetModal: React.FC<Props> = ({
 }) => {
   const [txLoading, setTxLoading] = useState(false);
   const [txHash, setTxHash] = useState<string>();
-  const [error, setError] = useState<ethers.errors>();
+  const [error, setError] = useState<ErrorCode>();
 
   const [bet, setBet] = useState<SignedBetHistoryResponse2>();
 

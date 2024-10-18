@@ -55,27 +55,23 @@ export const useLeaderboardStatistics = () => {
       const prevValue = prevObject[bet.owner] || 0n;
 
       const winChange = ethers.parseEther(ethers.formatEther(bet.payout));
-      const lossChange = ethers.utils
-        .parseEther(ethers.formatEther(bet.amount))
-        .mul("-1");
+      const lossChange = -ethers.parseEther(ethers.formatEther(bet.amount));
 
       return {
         ...prevObject,
-        [bet.owner]: (bet.result === BetResult.WINNER
-          ? winChange
-          : lossChange
-        ).add(prevValue)
+        [bet.owner]:
+          (bet.result === BetResult.WINNER ? winChange : lossChange) + prevValue
       };
-    }, {} as Record<string, BigNumber>);
+    }, {} as Record<string, bigint>);
 
     // turn object into an array for easy sorting
     const asArray = Object.entries(reduced).reduce(
       (prevArray, [address, value]) => [...prevArray, { address, value }],
-      [] as Array<{ address: string; value: BigNumber }>
+      [] as Array<{ address: string; value: bigint }>
     );
 
     // sort the new array in place, comparison is in essence (a, b) => b - a
-    asArray.sort((a, b) => +ethers.formatEther(b.value.sub(a.value)));
+    asArray.sort((a, b) => +ethers.formatEther(b.value - a.value));
 
     return asArray;
   }, [data, loading, hlToken, config]);

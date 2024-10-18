@@ -1,10 +1,9 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import useSubgraph from "../useSubgraph";
 import utils from "../../utils";
 import { useVaultContract } from "../contracts";
 import { useConfig } from "../../providers/Config";
-import { useProvider } from "wagmi";
 import constants from "../../constants";
 import { VaultTransaction } from "../../types/vaults";
 
@@ -14,7 +13,7 @@ type VaultTransactionResponse = {
 
 export const useVaultStatistics = () => {
   const config = useConfig();
-  const provider = useProvider();
+  //const provider = useProvider();
   const { totalAssetsLocked } = useVaultContract();
   const yesterdayFilter = useMemo(
     () =>
@@ -56,7 +55,7 @@ export const useVaultStatistics = () => {
     if (!vaultsTransactionData) return;
 
     return vaultsTransactionData.deposits.reduce(
-      (sum, curr) => sum.add(curr?.assets || "0"),
+      (sum, curr) => sum + BigInt(curr?.assets || "0"),
       0n
     );
   }, [vaultsTransactionData]);
@@ -65,7 +64,7 @@ export const useVaultStatistics = () => {
     if (!vaultsTransactionData) return;
 
     return vaultsTransactionData.withdraws.reduce(
-      (sum, curr) => sum.add(curr?.assets || "0"),
+      (sum, curr) => sum + BigInt(curr?.assets || "0"),
       0n
     );
   }, [vaultsTransactionData]);
@@ -74,10 +73,10 @@ export const useVaultStatistics = () => {
     if (!vaultsTransactionData) return;
     if (!totalVaultDeposits || !totalVaultWithdrawals) return 0n;
 
-    return totalVaultDeposits.add(totalVaultWithdrawals);
+    return totalVaultDeposits + totalVaultWithdrawals;
   }, [vaultsTransactionData, totalVaultDeposits, totalVaultWithdrawals]);
 
-  const [totalVaultsExposure, setTotalVaultsExposure] = useState<BigNumber>();
+  const [totalVaultsExposure, setTotalVaultsExposure] = useState<bigint>();
 
   useEffect(() => {
     if (!config) return;
@@ -95,7 +94,7 @@ export const useVaultStatistics = () => {
         })
       );
       const exposure = assets.reduce(
-        (sum, cur) => sum.add(ethers.parseEther(cur)),
+        (sum, cur) => sum + BigInt(ethers.parseEther(cur)),
         0n
       );
       setTotalVaultsExposure(exposure);

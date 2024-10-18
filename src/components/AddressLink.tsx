@@ -1,7 +1,7 @@
-import { Address } from "wagmi";
 import { formatting } from "horselink-sdk";
 import classNames from "classnames";
 import { useScannerUrl } from "../hooks/useScannerUrl";
+import { Address } from "viem";
 
 type Props = {
   address: Address;

@@ -1,37 +1,33 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Chain,
-  useAccount,
-  useConnect,
-  useNetwork,
-  useSwitchNetwork
-} from "wagmi";
+import { useAccount, useConnect, useSwitchChain, useConfig } from "wagmi";
 import { LOCAL_WALLET_ID } from "../constants/wagmi";
 import { useApiWithForce } from "../providers/Api";
 import { useApolloWithForce } from "../providers/Apollo";
 import { useLocation } from "react-router-dom";
-import { arbitrum } from "@wagmi/chains";
 import constants from "../constants";
 import { useFirstRender } from "./useFirstRender";
 import { CHAINS } from "../constants/blockchain";
 import { LAST_KNOWN_LS_KEY } from "./useLocalWallet";
+import { arbitrum, Chain } from "viem/chains";
 
 // beware all ye whom enter
 // here lie the dreaded overrides
 // to slay the plethora of dragons wagmi spawns
 
 export const useWalletOverrides = () => {
-  const { chain } = useNetwork();
-  const { connectors, connect } = useConnect();
-  const { connector, isConnected } = useAccount();
-  const { switchNetwork, isError } = useSwitchNetwork();
+  const { chain } = useAccount();
+  const chainId = chain?.id;
+  const { connectAsync, connectors } = useConnect();
+  const { isConnected } = useAccount();
+  const { switchChainAsync } = useSwitchChain();
+  const config = useConfig();
   const { forceNewChain: forceApi } = useApiWithForce();
   const { forceNewChain: forceApollo } = useApolloWithForce();
   const { pathname } = useLocation();
   const isFirstRender = useFirstRender();
 
-  const isLocalWallet = connector?.id === LOCAL_WALLET_ID;
-  const isChainUnsupported = chain?.unsupported || false;
+  const isLocalWallet = false; //= connector?.id === LOCAL_WALLET_ID;
+  const isChainUnsupported = !config.chains.some(chain => chain.id === chainId);
   const isUnsupportedPage = pathname === "/unsupported";
 
   const [isLoading, setLoading] = useState(false);
@@ -39,7 +35,7 @@ export const useWalletOverrides = () => {
   // network intent
   const networkIntent = useRef<Chain>(constants.blockchain.CHAINS[0]);
 
-  const forceNewNetwork = (chain: Chain) => {
+  const forceNewNetwork = async (chain: Chain) => {
     if (isUnsupportedPage || isLoading) return;
 
     try {
@@ -48,7 +44,7 @@ export const useWalletOverrides = () => {
       // write to LS
       localStorage.setItem(LAST_KNOWN_LS_KEY, chain.id.toString());
 
-      switchNetwork?.(chain.id);
+      await switchChainAsync({ chainId: chain.id });
       forceApi(chain);
       forceApollo(chain);
     } catch (e) {
@@ -75,11 +71,13 @@ export const useWalletOverrides = () => {
     if (!!isConnected) return;
 
     const localConnector = connectors.find(c => c.id === LOCAL_WALLET_ID);
-    forceNewNetwork(arbitrum);
-    connect({
-      connector: localConnector
-    });
-  }, [isConnected]);
+    if (localConnector) {
+      forceNewNetwork(arbitrum);
+      connectAsync({ connector: localConnector }).catch(error => {
+        console.error("Failed to connect:", error);
+      });
+    }
+  }, [isConnected, connectors, connectAsync]);
 
   // if the chain switches
   useEffect(() => {
@@ -106,11 +104,11 @@ export const useWalletOverrides = () => {
   }, [isLoading]);
 
   // if the user rejects the chain switch
-  useEffect(() => {
-    if (!isError || !chain) return;
+  // useEffect(() => {
+  //   if (!chain) return;
 
-    networkIntent.current = chain;
-  }, [isError]);
+  //   networkIntent.current = chain;
+  // }, [isError]);
 
   return {
     isLocalWallet,

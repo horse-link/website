@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useMemo, useState } from "react";
 import { Api } from "../apis/Api";
-import { useNetwork } from "wagmi";
 import constants from "../constants";
 import { Network } from "../types/general";
 import { ApiContextType } from "../types/context";
+import { useAccount } from "wagmi";
 
 // use placeholder default chain -- has no effect
 export const ApiContext = createContext<ApiContextType>({
@@ -21,7 +21,7 @@ export const useApiWithForce = () => useContext(ApiContext);
 export const ApiProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const { chain: currentChain } = useNetwork();
+  const { chain: currentChain } = useAccount();
   const [chain, setChain] = useState(currentChain);
 
   const forceNewChain = (newChain: Network) => setChain(newChain);

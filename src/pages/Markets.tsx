@@ -13,29 +13,32 @@ const Markets: React.FC = () => {
         <Card
           title="24H Volume"
           data={
-            totalVolume &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(totalVolume?.toString())
-            )}`
+            (totalVolume &&
+              `$${formatting.formatToFourDecimals(
+                ethers.formatEther(totalVolume?.toString())
+              )}`) ||
+            "-" // Fallback
           }
         />
         <Card title="24H Bets" data={totalBets?.toString()} />
         <Card
           title="Profit/Loss"
           data={
-            profit &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(profit?.toString())
-            )}`
+            (profit &&
+              `$${formatting.formatToFourDecimals(
+                ethers.formatEther(profit?.toString())
+              )}`) ||
+            "-" // Fallback
           }
         />
         <Card
           title="24H Largest Bet"
           data={
-            largestBet &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(largestBet?.toString())
-            )}`
+            (largestBet &&
+              `$${formatting.formatToFourDecimals(
+                ethers.formatEther(largestBet?.toString())
+              )}`) ||
+            "-"
           }
         />
       </div>

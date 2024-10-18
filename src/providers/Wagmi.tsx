@@ -5,23 +5,31 @@ import { http } from "viem";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import constants from "../constants";
-import { useHorseLinkConnector } from "../hooks/useHorseLinkConnector";
+import { arbitrum, sepolia } from "wagmi/chains";
+//import { horseLinkWalletConnector } from "../constants/wagmi";
+//import { useLocalWallet } from "../hooks/useLocalWallet";
+
+// interface HorseLinkWalletOptions {
+//   wallet: ReturnType<typeof useLocalWallet>;
+//   //chains: Chain[];
+// }
 
 const config = createConfig({
-  chains: constants.blockchain.CHAINS,
-  transports: Object.fromEntries(
-    constants.blockchain.CHAINS.map(chain => [
-      chain.id,
-      http(`${constants.env.RPC_URL}`)
-    ])
-  ),
+  chains: [arbitrum, sepolia],
+  transports: {
+    [arbitrum.id]: http(`${constants.env.RPC_URL}`),
+    [sepolia.id]: http(`${constants.env.RPC_URL}`)
+  },
   connectors: [
     metaMask(),
     walletConnect({
       projectId: "YOUR_PROJECT_ID", // Replace with your WalletConnect project ID
       showQrModal: true
     })
-    // HorseLinkWallet will be added dynamically
+    // horseLinkWalletConnector({
+    //   wallet: useLocalWallet([arbitrum, sepolia]),
+    //   //chains: [arbitrum, sepolia]
+    // } as HorseLinkWalletOptions)
   ]
 });
 
@@ -30,10 +38,9 @@ const queryClient = new QueryClient();
 export const CustomWagmiProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const horseLinkWallet = useHorseLinkConnector(constants.blockchain.CHAINS);
-
+  // const horseLinkWallet = useHorseLinkConnector(constants.blockchain.CHAINS);
   // Dynamically add the HorseLinkWallet connector
-  config.connectors.push(horseLinkWallet);
+  // config.connectors.push(horseLinkWallet);
 
   return (
     <WagmiProvider config={config}>

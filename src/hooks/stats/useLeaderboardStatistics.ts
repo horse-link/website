@@ -3,7 +3,7 @@ import { useConfig } from "../../providers/Config";
 import { Bet, BetResult } from "../../types/subgraph";
 import utils from "../../utils";
 import useSubgraph from "../useSubgraph";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import { ERC20__factory } from "../../typechain";
 import { useAccount, useProvider } from "wagmi";
 import {

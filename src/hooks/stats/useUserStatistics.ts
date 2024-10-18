@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { useMemo, useRef } from "react";
 import { useAccount } from "wagmi";
 import { Bet, BetResult, Deposit } from "../../types/subgraph";

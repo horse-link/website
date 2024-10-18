@@ -11,7 +11,7 @@ type Props = {
 export const FaucetModal: React.FC<Props> = ({ isOpen, onClose, txHash }) => (
   <BaseModal isOpen={isOpen} onClose={onClose} isLarge>
     <Web3SuccessHandler
-      hash={txHash || ethers.constants.HashZero}
+      hash={txHash || ethers.ZeroHash}
       message="Your tokens have been placed with"
     />
     <h2>It may take a few minutes to show up in your wallet.</h2>

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import { PageLayout } from "../components";
 import { useNavigate } from "react-router";
-import { useNetwork } from "wagmi";
+import { useAccount } from "wagmi";
+import { arbitrum } from "viem/chains";
 
 const UnsupportedNetwork: React.FC = () => {
   const navigate = useNavigate();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
 
   useEffect(() => {
     if (!chain) return;
 
-    if (!chain.unsupported)
+    if (chain.id !== arbitrum.id)
       navigate("/", {
         replace: true
       });

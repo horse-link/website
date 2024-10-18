@@ -26,37 +26,41 @@ const Vaults: React.FC = () => {
         <Card
           title="24H Vault Volume"
           data={
-            totalVaultVolume &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(totalVaultVolume)
-            )}`
+            totalVaultVolume
+              ? `$${formatting.formatToFourDecimals(
+                  ethers.formatEther(totalVaultVolume)
+                )}`
+              : "-"
           }
         />
         <Card
           title="Total Vault Exposure"
           data={
-            totalVaultsExposure &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(totalVaultsExposure)
-            )}`
+            totalVaultsExposure
+              ? `$${formatting.formatToFourDecimals(
+                  ethers.formatEther(totalVaultsExposure)
+                )}`
+              : "-" // Fallback
           }
         />
         <Card
           title="24H Deposits"
           data={
-            totalVaultDeposits &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(totalVaultDeposits)
-            )}`
+            totalVaultDeposits
+              ? `$${formatting.formatToFourDecimals(
+                  ethers.formatEther(totalVaultDeposits)
+                )}`
+              : "-" // Fallback
           }
         />
         <Card
           title="24H Withdrawals"
           data={
-            totalVaultWithdrawals &&
-            `$${formatting.formatToFourDecimals(
-              ethers.formatEther(totalVaultWithdrawals)
-            )}`
+            totalVaultWithdrawals
+              ? `$${formatting.formatToFourDecimals(
+                  ethers.formatEther(totalVaultWithdrawals)
+                )}`
+              : "-"
           }
         />
       </div>

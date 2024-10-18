@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import React from "react";
 import { LeaderboardBalance } from "../../types/leaderboard";
 import classNames from "classnames";
@@ -8,7 +8,7 @@ import { formatting } from "horselink-sdk";
 type Props = {
   stats?: Array<{
     address: string;
-    value: BigNumber;
+    value: bigint;
   }>;
   balances?: Array<LeaderboardBalance>;
   loading: boolean;

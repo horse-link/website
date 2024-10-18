@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { FaucetBalance } from "../types/faucet";
 import { useConfig } from "../providers/Config";
 import { ERC20__factory } from "../typechain";
-import { useBalance, useProvider } from "wagmi";
+import { useBalance, usePublicClient } from "wagmi";
 import { FaucetModal } from "../components/Modals";
 import { FaucetTable } from "../components/Tables";
 import { formatting } from "horselink-sdk";
@@ -13,7 +13,7 @@ const FAUCET_ADDRESS = "0xf919eaf2e37aac718aa19668b9071ee42c02c081";
 
 const Faucet: React.FC = () => {
   const config = useConfig();
-  const provider = useProvider();
+  const publicClient = usePublicClient();
   const { data: ethBalance } = useBalance({
     address: FAUCET_ADDRESS
   });
@@ -27,7 +27,10 @@ const Faucet: React.FC = () => {
 
     Promise.all(
       config.tokens.map(async t => {
-        const contract = ERC20__factory.connect(t.address, provider);
+        const contract = ERC20__factory.connect(
+          t.address,
+          publicClient?.account
+        );
         const [balance, decimals, symbol] = await Promise.all([
           contract.balanceOf(FAUCET_ADDRESS),
           contract.decimals(),
@@ -43,20 +46,23 @@ const Faucet: React.FC = () => {
       })
     )
       .then(b => {
-        const newBalances = [
+        const newBalances: FaucetBalance[] = [
           {
             name: "ETH",
             symbol: "ETH",
             amount: ethBalance.value,
-            decimals: ethBalance.decimals
+            decimals: Number(ethBalance.decimals)
           },
-          ...b
+          ...b.map(b => ({
+            ...b,
+            decimals: Number(b.decimals) // Change the contract decimals to a number, as it's needed by Wagmi useBalance hook
+          }))
         ];
 
         setBalances(newBalances);
       })
       .catch(console.error);
-  }, [config, provider, ethBalance]);
+  }, [config, publicClient, ethBalance]);
 
   const closeModal = () => setIsModalOpen(false);
 

@@ -1,9 +1,10 @@
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import React, { createContext, useContext, useMemo, useState } from "react";
 import constants from "../constants";
-import { useNetwork } from "wagmi";
+// import { useNetwork } from "wagmi";
 import { ApolloContextType } from "../types/context";
 import { Network } from "../types/general";
+import { useAccount } from "wagmi";
 
 const ApolloContext = createContext<ApolloContextType>({
   client: new ApolloClient({
@@ -26,7 +27,8 @@ export const useApolloWithForce = () => useContext(ApolloContext);
 export const ApolloProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const { chain: currentChain } = useNetwork();
+  const { chain: currentChain } = useAccount();
+
   const [chain, setChain] = useState(currentChain);
 
   const rawSuffix =

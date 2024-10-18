@@ -1,4 +1,3 @@
-import { ethers } from "ethers";
 import { useMemo } from "react";
 import { useApi } from "../../providers/Api";
 import { usePromise } from "../usePromise";

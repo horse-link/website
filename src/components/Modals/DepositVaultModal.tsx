@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSigner } from "wagmi";
 import { VaultInfo } from "horselink-sdk";
 import { BaseModal } from ".";
 import { ethers } from "ethers";
@@ -28,8 +27,6 @@ export const DepositVaultModal: React.FC<Props> = ({
   const [txLoading, setTxLoading] = useState(false);
   const [txHash, setTxHash] = useState<string>();
   const [error, setError] = useState<ethers.errors>();
-
-  const { data: signer } = useSigner();
 
   const { deposit } = useVaultContract();
   const { getBalance, getDecimals } = useERC20Contract();

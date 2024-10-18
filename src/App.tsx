@@ -1,5 +1,5 @@
 import Navigation from "./Navigation";
-import { WagmiProvider } from "./providers/Wagmi";
+import { CustomWagmiProvider } from "./providers/Wagmi";
 import { WalletModalProvider } from "./providers/WalletModal";
 import { ApolloProvider } from "./providers/Apollo";
 import { ConfigProvider } from "./providers/Config";
@@ -8,7 +8,7 @@ import { TokenContextProvider } from "./providers/Token";
 import { ApiProvider } from "./providers/Api";
 
 const App: React.FC = () => (
-  <WagmiProvider>
+  <CustomWagmiProvider>
     <ApiProvider>
       <ConfigProvider>
         <ApolloProvider>
@@ -22,7 +22,7 @@ const App: React.FC = () => (
         </ApolloProvider>
       </ConfigProvider>
     </ApiProvider>
-  </WagmiProvider>
+  </CustomWagmiProvider>
 );
 
 export default App;

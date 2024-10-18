@@ -1,18 +1,28 @@
-import { Signer } from "ethers";
-import { ERC20__factory } from "../../typechain";
+import { usePublicClient } from "wagmi";
+import { Address, erc20Abi } from "viem";
 
 export const useERC20Contract = () => {
-  const getBalance = async (tokenAddress: string, signer: Signer) => {
-    const userAddress = await signer.getAddress();
-    const erc20Contract = ERC20__factory.connect(tokenAddress, signer);
-    const balance = await erc20Contract.balanceOf(userAddress);
+  const publicClient = usePublicClient();
+
+  if (!publicClient) return null;
+
+  const getBalance = async (tokenAddress: Address, userAddress: Address) => {
+    const balance = await publicClient.readContract({
+      address: tokenAddress,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [userAddress]
+    });
 
     return balance;
   };
 
-  const getDecimals = async (tokenAddress: string, signer: Signer) => {
-    const erc20Contract = ERC20__factory.connect(tokenAddress, signer);
-    const decimals = await erc20Contract.decimals();
+  const getDecimals = async (tokenAddress: Address) => {
+    const decimals = await publicClient.readContract({
+      address: tokenAddress,
+      abi: erc20Abi,
+      functionName: "decimals"
+    });
 
     return decimals;
   };

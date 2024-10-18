@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useConnect } from "wagmi";
 import { BaseModal } from ".";
 import utils from "../../utils";
@@ -11,15 +11,17 @@ type Props = {
 };
 
 export const WalletModal: React.FC<Props> = (props: Props) => {
-  const { isModalOpen, closeWalletModal, setLoading } = props;
-  const { connect, connectors, isLoading } = useConnect();
+  const { isModalOpen, closeWalletModal } = props;
+  const { connect, connectors } = useConnect();
   // hours spent debugging "set state during render": 1
   // Warning: Cannot update a component (`PageLayout`) while rendering a different component (`WalletModal`). To locate the bad setState() call inside `WalletModal`,
   // setLoading(isLoading);
   // Changed to call when
-  useEffect(() => {
-    setLoading(isLoading);
-  }, [isLoading]);
+
+  // TODO: Implement loading behaviour. useConnect() doesn't return isLoading anymore
+  // useEffect(() => {
+  //   setLoading(isLoading);
+  // }, [isLoading]);
 
   const connectorsWithIcons = connectors.map(connector => ({
     connector,

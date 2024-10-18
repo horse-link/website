@@ -4,7 +4,7 @@ import {
   Market__factory,
   Vault__factory
 } from "../../typechain";
-import { BigNumber, ethers, Signer } from "ethers";
+import { ethers, Signer } from "ethers";
 import { Config, MarketInfo } from "../../types/config";
 import utils from "../../utils";
 import { Back, BackParams } from "../../types/meets";
@@ -22,7 +22,7 @@ export const useMarketContract = () => {
     data: Array<{
       back: Back;
       market: MarketInfo;
-      wager: BigNumber;
+      wager: bigint;
     }>,
     skipAllowanceCheck?: boolean
   ) => {
@@ -48,8 +48,8 @@ export const useMarketContract = () => {
           )
           .reduce((acc, curr) => {
             // return acc.add(ethers.parseUnits(curr.wager, decimals));
-            return acc.add(curr.wager);
-          }, BigNumber.from(0));
+            return acc + curr.wager;
+          }, 0n);
         const backs = data
           .filter(
             d => d.market.address.toLowerCase() === marketAddress.toLowerCase()
@@ -72,7 +72,7 @@ export const useMarketContract = () => {
 
     // find which need to be increased
     const toProcess = marketMultiBetInfoList.filter(a =>
-      a.allowance.lt(a.totalWagers)
+      a.allowance < a.totalWagers
     );
 
     // trigger allowances
@@ -159,11 +159,11 @@ export const useMarketContract = () => {
         userAddress,
         market.address
       );
-      if (userAllowance.lt(wager)) {
+      if (userAllowance < wager) {
         const [gasLimit, gasPrice] = await Promise.all([
           erc20Contract.estimateGas.approve(
             market.address,
-            ethers.constants.MaxUint256
+            ethers.MaxUint256
           ),
           signer.getGasPrice()
         ]);
@@ -171,7 +171,7 @@ export const useMarketContract = () => {
         await (
           await erc20Contract.approve(
             market.address,
-            ethers.constants.MaxUint256,
+            ethers.MaxUint256,
             {
               gasLimit,
               gasPrice
@@ -328,7 +328,7 @@ export const useMarketContract = () => {
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
-          ethers.BigNumber.from(bet.scratched.totalOdds)
+          BigInt(bet.scratched.totalOdds)
         )
       )
         throw new Error("Signature invalid");
@@ -341,7 +341,7 @@ export const useMarketContract = () => {
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
-          ethers.BigNumber.from(bet.scratched.totalOdds),
+          BigInt(bet.scratched.totalOdds),
           bet.scratched.signature
         ),
         signer.getGasPrice()
@@ -356,7 +356,7 @@ export const useMarketContract = () => {
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
-          ethers.BigNumber.from(bet.scratched.totalOdds),
+          BigInt(bet.scratched.totalOdds),
           bet.scratched.signature,
           {
             gasLimit,
@@ -383,18 +383,18 @@ export const useMarketContract = () => {
 
   const getPotentialPayout = async (
     market: MarketInfo,
-    wager: BigNumber,
+    wager: bigint,
     back: Back,
     signer: Signer
-  ): Promise<BigNumber> => {
+  ): Promise<bigint> => {
     const marketContract = Market__factory.connect(market.address, signer);
 
-    const odds: BigNumber = ethers.parseUnits(
+    const odds: bigint = ethers.parseUnits(
       back.odds.toString(),
       constants.contracts.MARKET_ODDS_DECIMALS
     );
 
-    const payout: BigNumber = await marketContract.getPotentialPayout(
+    const payout: bigint = await marketContract.getPotentialPayout(
       formatting.formatBytes16String(back.proposition_id),
       formatting.formatBytes16String(back.market_id),
       wager,
@@ -410,7 +410,7 @@ export const useMarketContract = () => {
     signer: Signer
   ): Promise<string> => {
     const marketContract = Market__factory.connect(market.address, signer);
-    const odds: BigNumber = ethers.parseUnits(
+    const odds: bigint = ethers.parseUnits(
       bet.scratched!.odds.toFixed(constants.contracts.MARKET_ODDS_DECIMALS),
       constants.contracts.MARKET_ODDS_DECIMALS
     );

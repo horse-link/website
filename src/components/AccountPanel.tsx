@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Chain, useAccount, useBalance, useNetwork, useSigner } from "wagmi";
+import { useAccount, useBalance, useConfig } from "wagmi";
 import utils from "../utils";
-import { ethers } from "ethers";
 import { useBetSlipContext } from "../providers/BetSlip";
 import { useWalletModal } from "../providers/WalletModal";
 import { useERC20Contract } from "../hooks/contracts";
 import { LS_PRIVATE_KEY } from "../hooks/useLocalWallet";
-import { useConfig } from "../providers/Config";
 import { useTokenContext } from "../providers/Token";
 import { UserBalance } from "../types/users";
 import constants from "../constants";
@@ -16,6 +14,9 @@ import { AiFillEyeInvisible, AiOutlineQrcode } from "react-icons/ai";
 import { QrCodeModal } from "./Modals";
 import { Listbox } from "@headlessui/react";
 import { formatting } from "horselink-sdk";
+import { Chain } from "viem/chains";
+import { formatUnits } from "ethers";
+import { Address } from "viem";
 
 type Props = {
   forceNewNetwork: (chain: Chain) => void;
@@ -30,16 +31,15 @@ export const AccountPanel: React.FC<Props> = ({
   const { hashes } = useBetSlipContext();
 
   const { openWalletModal } = useWalletModal();
-  const account = useAccount();
+  const { address } = useAccount();
   const config = useConfig();
-
+  const { chain } = useAccount();
+  const chainId = chain?.id;
   const { data: balanceData } = useBalance({
-    address: account.address
+    address: address
   });
-  const { data: signer } = useSigner();
-  const { getBalance } = useERC20Contract();
+  const erc20Contract = useERC20Contract();
   const [userBalance, setUserBalance] = useState<UserBalance>();
-  const { chain, chains } = useNetwork();
   const [showQrCodeModal, setQrCodeModal] = useState(false);
   const closeQrCodeModal = () => setQrCodeModal(false);
 
@@ -58,20 +58,23 @@ export const AccountPanel: React.FC<Props> = ({
   const togglePrivateKey = () => setShowPrivateKey(prev => !prev);
 
   useEffect(() => {
-    //debugger;
-    if (!currentToken || !signer) return;
+    if (!currentToken || !address || !erc20Contract) return;
 
     setUserBalance(undefined);
-    getBalance(currentToken.address, signer).then(balance =>
-      setUserBalance({
-        value: balance,
-        decimals: +currentToken.decimals,
-        formatted: formatting.formatToFourDecimals(
-          ethers.formatUnits(balance, currentToken.decimals)
-        )
-      })
-    );
-  }, [currentToken, signer, config, hashes]);
+    erc20Contract
+      .getBalance(currentToken.address as Address, address as Address)
+      .then(balance =>
+        setUserBalance({
+          value: balance,
+          decimals: +currentToken.decimals,
+          formatted: formatting.formatToFourDecimals(
+            formatUnits(balance, currentToken.decimals)
+          )
+        })
+      );
+  }, [currentToken, address, erc20Contract, config, hashes]);
+
+  const currentChain = config.chains.find(c => c.id === chainId);
 
   return (
     <React.Fragment>
@@ -117,21 +120,21 @@ export const AccountPanel: React.FC<Props> = ({
               {({}) => (
                 <React.Fragment>
                   <Listbox.Button className="w-full w-full border border-hl-secondary bg-hl-secondary py-2 font-sans text-sm text-hl-background 3xl:text-base">
-                    {chain?.name || "Please connect"}
+                    {currentChain?.name || "Please connect"}
                   </Listbox.Button>
                   <Listbox.Options className="pt-2 font-sans text-base font-normal">
-                    {[
-                      ...chains.filter(c => (chain ? c.id !== chain.id : true))
-                    ].map(chain => (
-                      <Listbox.Option key={chain.id} value={chain.id}>
-                        <button
-                          onClick={() => forceNewNetwork(chain)}
-                          className="w-full border border-hl-primary py-2 text-center hover:bg-hl-primary hover:text-hl-secondary"
-                        >
-                          {chain.name}
-                        </button>
-                      </Listbox.Option>
-                    ))}
+                    {config.chains
+                      .filter(c => c.id !== chainId)
+                      .map(chain => (
+                        <Listbox.Option key={chain.id} value={chain.id}>
+                          <button
+                            onClick={() => forceNewNetwork(chain)}
+                            className="w-full border border-hl-primary py-2 text-center hover:bg-hl-primary hover:text-hl-secondary"
+                          >
+                            {chain.name}
+                          </button>
+                        </Listbox.Option>
+                      ))}
                   </Listbox.Options>
                 </React.Fragment>
               )}
@@ -153,13 +156,11 @@ export const AccountPanel: React.FC<Props> = ({
                 </h3>
                 <Button
                   text="COPY"
-                  onClick={() =>
-                    navigator.clipboard.writeText(account.address || "")
-                  }
+                  onClick={() => navigator.clipboard.writeText(address || "")}
                 />
               </div>
               <p className="mb-6 truncate border border-hl-border p-2">
-                {account.address}
+                {address}
               </p>
               {isLocalWallet && (
                 <React.Fragment>

@@ -8,9 +8,10 @@ import { useConfig } from "../providers/Config";
 import utils from "../utils";
 import { RacesButton, SettleRaceButton } from "../components/Buttons";
 import dayjs from "dayjs";
-import { useAccount, useSigner } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import { BetHistoryResponse2 } from "../types/bets";
 import { RaceInfo, markets } from "horselink-sdk";
+import { BrowserProvider, JsonRpcSigner } from "ethers";
 
 const Results: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -24,7 +25,19 @@ const Results: React.FC = () => {
   const config = useConfig();
   const params = useParams();
   const { isConnected } = useAccount();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
+  const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
+
+  useEffect(() => {
+    const setupSigner = async () => {
+      if (walletClient) {
+        const provider = new BrowserProvider(walletClient.transport);
+        const newSigner = await provider.getSigner();
+        setSigner(newSigner);
+      }
+    };
+    setupSigner();
+  }, [walletClient]);
 
   const propositionId = params.propositionId || "";
   const details = utils.markets.getDetailsFromPropositionId(propositionId);

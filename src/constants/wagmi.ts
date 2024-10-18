@@ -1,262 +1,121 @@
-import { createConnector } from "@wagmi/core";
+// import { createConnector } from "@wagmi/core";
+// import { Network } from "../types/general";
+// import { AlchemyProvider, Wallet } from "ethers";
+// import { Chain } from "wagmi/chains";
+// import { Address } from "viem";
 
-import { Network } from "../types/general";
-import { AlchemyProvider, Wallet } from "ethers";
-import { Chain } from "wagmi/chains";
-import { type Address } from "viem";
+// export type HorseLinkWalletOptions = {
+//   wallet: Wallet;
+//   setChain: (chain: Network) => void;
+//   chains: Chain[];
+// };
 
-export type HorseLinkWalletOptions = {
-  wallet: Wallet;
-  setChain: (chain: Network) => void;
-  chains: Chain[];
-};
+// export const HorseLinkWalletConnector = createConnector<
+//   AlchemyProvider,
+//   HorseLinkWalletOptions
+// >(config => {
+//   let wallet: Wallet;
+//   let setChain: (chain: Network) => void;
+//   let chains: Chain[];
 
-export const horseLinkWalletConnector = ({
-  wallet,
-  setChain,
-  chains
-}: HorseLinkWalletOptions) => {
-  return createConnector(config => ({
-    id: "horselinkwallet",
-    name: "HorseLink Wallet",
-    type: "horselinkwallet",
+//   return {
+//     id: "horselinkwallet",
+//     name: "HorseLink Wallet",
+//     type: "horselinkwallet",
 
-    connect: async ({ chainId }: { chainId?: number }) => {
-      const provider = await getProvider();
-      const account = await getAccount();
-      const id = chainId || (await getChainId());
+//     setup(options) {
+//       wallet = options.wallet;
+//       setChain = options.setChain;
+//       chains = options.chains;
+//     },
 
-      return {
-        account,
-        chain: { id, unsupported: isChainUnsupported(id) },
-        provider
-      };
-    },
+//     async connect({ chainId }: { chainId?: number } = {}) {
+//       const provider = await this.getProvider();
+//       const accounts = await this.getAccounts();
+//       const account = accounts[0]; // Get the first account
+//       const id = chainId || (await this.getChainId());
 
-    disconnect: async () => {
-      const provider = await getProvider();
-      provider.removeAllListeners();
-    },
+//       return {
+//         account,
+//         chain: { id, unsupported: this.isChainUnsupported(id) },
+//         provider
+//       };
+//     },
 
-    getAccount: async () => {
-      return wallet.address;
-    },
+//     async disconnect() {
+//       const provider = await this.getProvider();
+//       provider.removeAllListeners();
+//     },
 
-    // getProvider: async () => {
-    //   return wallet.provider as AlchemyProvider
-    // },
+//     async getAccount() {
+//       return wallet.address as Address;
+//     },
 
-    getSigner: async () => {
-      return wallet;
-    },
+//     async getAccounts() {
+//       return [wallet.address as Address];
+//     },
 
-    isAuthorized: async () => {
-      try {
-        const account = await getAccount();
-        return !!account;
-      } catch {
-        return false;
-      }
-    },
+//     async getChainId() {
+//       const provider = await this.getProvider();
+//       const network = await provider.getNetwork();
+//       return network.chainId;
+//     },
 
-    switchChain: async chain => {
-      const newChain = chains.find(c => c.id === chain.chainId);
-      if (!newChain) throw new Error(`Unsupported chain id: ${chain.chainId}`);
+//     async getProvider() {
+//       return wallet.provider as AlchemyProvider;
+//     },
 
-      setChain(newChain as Network); // Assuming Network is compatible with Chain
-      return {
-        id: newChain.id,
-        name: newChain.name,
-        network: newChain.id,
-        nativeCurrency: newChain.nativeCurrency,
-        rpcUrls: newChain.rpcUrls
-      };
-    },
+//     async getSigner() {
+//       return wallet;
+//     },
 
-    onAccountsChanged: accounts => {
-      if (accounts.length === 0) {
-        config.emitter.emit("disconnect");
-      } else {
-        config.emitter.emit("change", { accounts: accounts });
-      }
-    },
+//     async isAuthorized() {
+//       try {
+//         const accounts = await this.getAccounts();
+//         const account = accounts[0];
+//         return !!account;
+//       } catch {
+//         return false;
+//       }
+//     },
 
-    onChainChanged: chain => {
-      const chainId = Number(chain);
-      config.emitter.emit("change", { chainId });
-    },
+//     async switchChain(chainId: number) {
+//       const chain = chains.find(c => c.id === chainId);
+//       if (!chain) throw new Error(`Unsupported chainId: ${chainId}`);
+//       setChain(chain as Network);
+//       return chain;
+//     },
 
-    onDisconnect: () => {
-      config.emitter.emit("disconnect");
-    }
-  }));
+//     onAccountsChanged(accounts: string[]) {
+//       if (accounts.length === 0) config.emitter.emit("disconnect");
+//       else config.emitter.emit("change", { accounts: accounts as Address[] });
+//     },
 
-  function isChainUnsupported(chainId: number): boolean {
-    return !chains.map(c => c.id).includes(chainId);
-  }
+//     onChainChanged(chainId: string | number) {
+//       const id = Number(chainId);
+//       config.emitter.emit("change", {
+//         chain: { id, unsupported: this.isChainUnsupported(id) }
+//       });
+//     },
 
-  async function getAccount() {
-    return wallet.address;
-  }
+//     onDisconnect() {
+//       config.emitter.emit("disconnect");
+//     },
 
-  async function getChainId() {
-    const provider: AlchemyProvider = await getProvider();
-    return provider.getNetwork().then(network => network.chainId);
-  }
+//     isChainUnsupported(chainId: number) {
+//       return !chains.some(x => x.id === chainId);
+//     },
 
-  async function getProvider() {
-    return wallet.provider as AlchemyProvider;
-  }
-};
-/*
-// Below is the existing connector that we are refactoring to use the new wagmi connector system
-type Options = {
-  wallet: ethers.Wallet;
-  setChain: (chain: Network) => void;
-};
+//     async getWalletClient() {
+//       // Implement if needed
+//       throw new Error("getWalletClient not implemented");
+//     },
 
-export const LOCAL_WALLET_ID = "horselinkwallet";
+//     async getClient() {
+//       // Implement if needed
+//       throw new Error("getClient not implemented");
+//     }
+//   };
+// });
 
-export class HorseLinkWalletConnector extends Connector<
-  providers.AlchemyProvider,
-  Options,
-  ethers.Signer
-> {
-  readonly id = LOCAL_WALLET_ID;
-  readonly name = "HorseLink Wallet";
-  readonly ready = true;
-
-  // user wallet and network setter
-  private _wallet: ethers.Wallet;
-
-  private _chains: Array<Chain>;
-  private _setChain: (chain: Network) => void;
-
-  constructor({
-    chains,
-    options
-  }: {
-    chains?: Array<Chain>;
-    options: Options;
-  }) {
-    if (!chains?.length) throw new Error("Cannot initialise without chains");
-
-    super({
-      chains,
-      options
-    });
-
-    this._wallet = options.wallet;
-    this._setChain = options.setChain;
-
-    this._chains = chains;
-  }
-
-  // core
-  async connect({ chainId }: { chainId?: number } = {}) {
-    try {
-      const provider = await this.getProvider();
-
-      provider.on("accountsChanged", this.onAccountsChanged);
-      provider.on("chainChanged", this.onChainChanged);
-      provider.on("disconnect", this.onDisconnect);
-
-      const id = chainId || (await this.getChainId());
-      const account = await this.getAccount();
-
-      return {
-        account,
-        chain: { id, unsupported: this.isChainUnsupported(id) },
-        provider
-      };
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  }
-
-  async disconnect() {
-    if (!this._wallet) return;
-
-    const provider = await this.getProvider();
-    provider.removeListener("accountsChanged", this.onAccountsChanged);
-    provider.removeListener("chainChanged", this.onChainChanged);
-    provider.removeListener("disconnect", this.onDisconnect);
-  }
-
-  async switchChain(chainId: number): Promise<Chain> {
-    const newChain = this._chains.find(c => c.id === chainId);
-    if (!newChain) throw new Error(`No chain for id ${chainId}`);
-
-    this._setChain(newChain);
-
-    return newChain;
-  }
-
-  // utils
-  isChainUnsupported(chainId: number): boolean {
-    return !this._chains.map(c => c.id).includes(chainId);
-  }
-
-  async isAuthorized(): Promise<boolean> {
-    try {
-      const account = await this.getAccount();
-      return !!account;
-    } catch {
-      return false;
-    }
-  }
-
-  // event listeners
-  protected onAccountsChanged(accounts: Array<Address>): void {
-    if (!accounts.length) {
-      this.emit("disconnect");
-      return;
-    }
-
-    this.emit("change", { account: ethers.utils.getAddress(accounts[0]) });
-  }
-
-  protected onChainChanged(chain: string | number): void {
-    const id = normalizeChainId(chain);
-    this.emit("change", {
-      chain: {
-        id,
-        unsupported: false
-      }
-    });
-  }
-
-  protected onDisconnect(): void {
-    this.emit("disconnect");
-  }
-
-  // getters
-  async getAccount() {
-    const wallet = await this.getWallet();
-    return ethers.utils.getAddress(wallet.address);
-  }
-
-  async getChainId(): Promise<number> {
-    const provider = await this.getProvider();
-    return provider.network.chainId;
-  }
-
-  getWallet() {
-    if (!this._wallet)
-      throw new Error("The user wallet has not been generated yet");
-
-    return this._wallet;
-  }
-
-  async getProvider() {
-    const wallet = this.getWallet();
-    return wallet.provider as providers.AlchemyProvider;
-  }
-
-  // required by class extension
-  async getSigner() {
-    return this.getWallet();
-  }
-}
-*/
+export const LOCAL_WALLET_ID = "local";

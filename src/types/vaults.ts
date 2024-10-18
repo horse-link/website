@@ -1,5 +1,5 @@
 import { VaultInfo } from "horselink-sdk";
-import { AddressString, HashString } from "./subgraph";
+import { Address, Hash } from "viem";
 
 export type Vault = {
   name: string;
@@ -27,10 +27,10 @@ export type VaultModalState = {
 };
 
 export type VaultTransaction = {
-  id: HashString;
+  id: Hash;
   type: VaultTransactionType;
-  vaultAddress: AddressString; // "0x${string}"
-  userAddress: AddressString; // "0x${string}"
+  vaultAddress: Address;
+  userAddress: Address;
   amount: bigint;
   timestamp: number;
 };
@@ -39,6 +39,6 @@ export type VaultHistory = {
   type: VaultTransactionType;
   amount: bigint;
   createdAt: number;
-  vaultAddress: AddressString; // "0x${string}"
-  tx: HashString;
+  vaultAddress: Address;
+  tx: Hash;
 }[];

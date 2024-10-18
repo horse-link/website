@@ -1,37 +1,34 @@
 import { render } from "@testing-library/react";
 import { ApolloProvider } from "../providers/Apollo";
 import { WalletModalProvider } from "../providers/WalletModal";
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import * as chain from "@wagmi/chains";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectLegacyConnector } from "wagmi/connectors/walletConnectLegacy";
-import { publicProvider } from "wagmi/providers/public";
+import { http, createConfig } from "wagmi";
+import { sepolia } from "wagmi/chains";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { WagmiProvider } from "wagmi";
+import { metaMask, walletConnect } from "wagmi/connectors";
 
-const { chains, provider } = configureChains(
-  [chain.sepolia],
-  [publicProvider()]
-);
-
-const wagmiClient = createClient({
+const config = createConfig({
+  chains: [sepolia],
   connectors: [
-    new MetaMaskConnector({ chains }),
-    new WalletConnectLegacyConnector({
-      chains,
-      options: {
-        qrcode: true
-      }
-    })
+    metaMask(),
+    walletConnect({ projectId: "YOUR_PROJECT_ID" }) // Replace with your WalletConnect project ID
   ],
-  provider
+  transports: {
+    [sepolia.id]: http()
+  }
 });
+
+const queryClient = new QueryClient();
 
 const BaseProviders = ({ children }: { children: React.ReactNode }) => {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <WalletModalProvider>
-        <ApolloProvider>{children}</ApolloProvider>
-      </WalletModalProvider>
-    </WagmiConfig>
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <WalletModalProvider>
+          <ApolloProvider>{children}</ApolloProvider>
+        </WalletModalProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 

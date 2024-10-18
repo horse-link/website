@@ -1,49 +1,43 @@
-import { configureChains, createClient, WagmiConfig } from "wagmi";
-import { MetaMaskConnector } from "wagmi/connectors/metaMask";
-import { WalletConnectLegacyConnector } from "wagmi/connectors/walletConnectLegacy";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
+import { createConfig, WagmiProvider } from "wagmi";
+import { metaMask } from "wagmi/connectors";
+import { walletConnect } from "wagmi/connectors";
+import { http } from "viem";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import constants from "../constants";
 import { useHorseLinkConnector } from "../hooks/useHorseLinkConnector";
 
-const { chains, provider, webSocketProvider } = configureChains(
-  constants.blockchain.CHAINS,
-  // [
-  //   alchemyProvider({
-  //     apiKey: constants.env.ALCHEMY_KEY
-  //   }),
-  //   publicProvider()
-  // ]
-  [
-    jsonRpcProvider({
-      rpc: chain => ({
-        chainId: chain.id,
-        http: `${constants.env.RPC_URL}`
-      })
+const config = createConfig({
+  chains: constants.blockchain.CHAINS,
+  transports: Object.fromEntries(
+    constants.blockchain.CHAINS.map(chain => [
+      chain.id,
+      http(`${constants.env.RPC_URL}`)
+    ])
+  ),
+  connectors: [
+    metaMask(),
+    walletConnect({
+      projectId: "YOUR_PROJECT_ID", // Replace with your WalletConnect project ID
+      showQrModal: true
     })
+    // HorseLinkWallet will be added dynamically
   ]
-);
+});
 
-export const WagmiProvider: React.FC<{ children: React.ReactNode }> = ({
+const queryClient = new QueryClient();
+
+export const CustomWagmiProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const HorseLinkWallet = useHorseLinkConnector(chains);
+  const horseLinkWallet = useHorseLinkConnector(constants.blockchain.CHAINS);
 
-  const client = createClient({
-    autoConnect: true,
-    connectors: [
-      new MetaMaskConnector({ chains }),
-      new WalletConnectLegacyConnector({
-        chains,
-        options: {
-          qrcode: true
-        }
-      }),
-      HorseLinkWallet
-    ],
-    provider,
-    webSocketProvider
-  });
+  // Dynamically add the HorseLinkWallet connector
+  config.connectors.push(horseLinkWallet);
 
-  return <WagmiConfig client={client}>{children}</WagmiConfig>;
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </WagmiProvider>
+  );
 };

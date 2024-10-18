@@ -1,7 +1,5 @@
 import { VaultTransaction } from "./vaults";
-
-export type AddressString = string;
-export type HashString = string;
+import { Address, Hash } from "viem";
 
 export type SubgraphValues = string | number | boolean;
 
@@ -35,12 +33,12 @@ export type Registry = {
   // id will always be registry
   id: "registry";
 
-  markets: Array<AddressString>;
-  vaults: Array<AddressString>;
+  markets: Array<Address>;
+  vaults: Array<Address>;
 };
 
 // bet id will be BET_<MARKET_ADDRESS>_<BET_NUMBER>
-export type BetId = `BET_${AddressString}_${number}`;
+export type BetId = `BET_${Address}_${number}`;
 
 // shadowed from contracts
 export const enum BetResult {
@@ -52,55 +50,55 @@ export const enum BetResult {
 
 export type Bet = {
   id: BetId;
-  asset: AddressString;
+  asset: Address;
   payoutAt: number;
-  market: AddressString;
+  market: Address;
   marketId: string;
   propositionId: string;
   amount: bigint;
   payout: bigint;
-  owner: AddressString;
+  owner: Address;
   createdAt: number;
-  createdAtTx: HashString;
+  createdAtTx: Hash;
   settled: boolean;
   result: BetResult;
-  recipient: AddressString;
+  recipient: Address;
   settledAt: number;
-  settledAtTx: HashString;
+  settledAtTx: Hash;
   refunded: boolean;
 };
 
 // leave these in for backwards compatibility
 export type Deposit = {
-  id: HashString;
-  vault: AddressString;
-  sender: AddressString;
-  owner: AddressString;
+  id: Hash;
+  vault: Address;
+  sender: Address;
+  owner: Address;
   assets: bigint;
   shares: bigint;
   createdAt: number;
 };
 
 export type Withdraw = {
-  id: HashString;
-  vault: AddressString;
-  sender: AddressString;
-  receiver: AddressString;
-  owner: AddressString;
+  id: Hash;
+  vault: Address;
+  sender: Address;
+  receiver: Address;
+  owner: Address;
   assets: bigint;
   shares: bigint;
   createdAt: number;
 };
 
 export type Borrow = {
-  id: HashString;
-  vaultAddress: AddressString;
+  id: Hash;
+  vaultAddress: Address;
   betIndex: number;
   amount: bigint;
 };
 
 export type Repay = {
-  id: HashString;
-  vaultAddress: AddressString;
+  id: Hash;
+  vaultAddress: Address;
   amount: bigint;
 };

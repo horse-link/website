@@ -1,11 +1,10 @@
-import { Address, Hash } from "@wagmi/core";
-import { BigNumber } from "ethers";
 import { MarketHistoryType } from "horselink-sdk";
+import { Address, Hash } from "viem";
 
 export type MarketHistory = {
   id: Hash; // tx id
   vaultAddress: Address;
-  amount: BigNumber;
+  amount: bigint;
   type: MarketHistoryType;
   createdAt: number;
 };

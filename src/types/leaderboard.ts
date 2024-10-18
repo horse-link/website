@@ -1,25 +1,23 @@
-import { BigNumber } from "ethers";
-
 export type LeaderboardStat = {
   address: string;
-  value: BigNumber;
+  value: bigint;
 };
 
 export type LeaderboardBalance = {
   address: string;
-  value: BigNumber;
+  value: bigint;
   decimals: number;
   formatted: string;
 };
 
 export type LeaderboardUserBalance = Pick<LeaderboardBalance, "address"> & {
   balance: {
-    value: BigNumber;
+    value: bigint;
     decimals: number;
     formatted: string;
   };
   earnings: {
-    value: BigNumber;
+    value: bigint;
     decimals: number;
     formatted: string;
   };

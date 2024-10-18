@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { EcSignature } from "./general";
 import { RaceInfo } from "horselink-sdk";
 
@@ -42,5 +41,5 @@ export type Back = {
 // The parameters for a call to back() on the Market contract.
 // Same as Back but with a wager attribute
 export type BackParams = Back & {
-  wager: BigNumber;
+  wager: bigint;
 };

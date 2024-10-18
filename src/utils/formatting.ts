@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { MeetInfo } from "../types/meets";
 import { BetId, Deposit, Withdraw } from "../types/subgraph";
-import { Chain } from "wagmi";
+import { Chain } from "viem/chains";
 import { VaultTransaction } from "../types/vaults";
 
 // add a comma every 3 digits
@@ -112,7 +112,7 @@ export const formatOrdinals = (n: number) => {
   return `${n}${suffix}`;
 };
 
-export const formatChain = (chain: Chain): Chain => ({
+export const formatChain = (chain: Chain): Partial<Chain> => ({
   ...chain,
   // take out spaces and capitals
   name: chain.name.split(" ")[0].toLowerCase()

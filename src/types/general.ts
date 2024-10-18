@@ -1,4 +1,4 @@
-import { Chain } from "wagmi";
+import { Chain } from "viem/chains";
 
 export type EcSignature = {
   v: number;

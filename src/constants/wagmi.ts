@@ -1,13 +1,108 @@
-import { ethers, providers } from "ethers";
-import { Chain, Connector } from "wagmi";
-import { Address, normalizeChainId } from "@wagmi/core";
-import { Network } from "../types/general";
+import { createConnector } from '@wagmi/core'
 
-// documentation:
-// https://wagmi.sh/examples/custom-connector
-// https://github.com/wagmi-dev/references/blob/9cb0535077504c27626b2e4bc32dc983d63a56ba/packages/connectors/src/coinbaseWallet.ts
-// https://github.com/wagmi-dev/references/blob/9cb0535077504c27626b2e4bc32dc983d63a56ba/packages/connectors/src/walletConnect.ts
+import { Network } from "../types/general"
+import { AlchemyProvider, Wallet } from 'ethers'
+import { Chain } from 'wagmi/chains'
+import { type Address } from 'viem'
 
+export type HorseLinkWalletOptions = {
+  wallet: Wallet
+  setChain: (chain: Network) => void
+  chains: Chain[]
+}
+
+export const horseLinkWalletConnector = ({ wallet, setChain, chains }: HorseLinkWalletOptions) => {
+  return createConnector((config) => ({
+    id: 'horselinkwallet',
+    name: 'HorseLink Wallet',
+    type: 'horselinkwallet',
+    
+    connect: async ({ chainId }) => {
+      const provider = await getProvider()
+      const account = await getAccount()
+      const id = chainId || (await getChainId())
+      
+      return { account, chain: { id, unsupported: isChainUnsupported(id) }, provider }
+    },
+    
+    disconnect: async () => {
+      const provider = await getProvider()
+      provider.removeAllListeners()
+    },
+    
+    getAccount: async () => {
+      return wallet.address
+    },
+    
+    
+    // getProvider: async () => {
+    //   return wallet.provider as AlchemyProvider
+    // },
+    
+    getSigner: async () => {
+      return wallet
+    },
+    
+    isAuthorized: async () => {
+      try {
+        const account = await getAccount()
+        return !!account
+      } catch {
+        return false
+      }
+    },
+    
+    switchChain: async (chain) => {
+      const newChain = chains.find(c => c.id === chain.chainId)
+      if (!newChain) throw new Error(`Unsupported chain id: ${chain.chainId}`)
+      
+      setChain(newChain as Network) // Assuming Network is compatible with Chain
+      return {
+        id: newChain.id,
+        name: newChain.name,
+        network: newChain.id,
+        nativeCurrency: newChain.nativeCurrency,
+        rpcUrls: newChain.rpcUrls
+      }
+    },
+    
+    onAccountsChanged: (accounts) => {
+      if (accounts.length === 0) {
+        config.emitter.emit('disconnect')
+      } else {
+        config.emitter.emit('change', { accounts: accounts })
+      }
+    },
+    
+    onChainChanged: (chain) => {
+      const chainId = Number(chain)
+      config.emitter.emit('change', { chainId  })
+    },
+    
+    onDisconnect: () => {
+      config.emitter.emit('disconnect')
+    },
+  }))
+  
+  function isChainUnsupported(chainId: number): boolean {
+    return !chains.map(c => c.id).includes(chainId)
+  }
+  
+  async function getAccount() {
+    return wallet.address
+  }
+  
+  async function getChainId() {
+    const provider: AlchemyProvider = await getProvider()
+    return provider.getNetwork().then((network) => network.chainId)
+  }
+  
+  async function getProvider() {
+    return wallet.provider as AlchemyProvider
+  }
+}
+/*
+// Below is the existing connector that we are refactoring to use the new wagmi connector system
 type Options = {
   wallet: ethers.Wallet;
   setChain: (chain: Network) => void;
@@ -112,7 +207,7 @@ export class HorseLinkWalletConnector extends Connector<
       return;
     }
 
-    this.emit("change", { account: ethers.getAddress(accounts[0]) });
+    this.emit("change", { account: ethers.utils.getAddress(accounts[0]) });
   }
 
   protected onChainChanged(chain: string | number): void {
@@ -132,7 +227,7 @@ export class HorseLinkWalletConnector extends Connector<
   // getters
   async getAccount() {
     const wallet = await this.getWallet();
-    return ethers.getAddress(wallet.address);
+    return ethers.utils.getAddress(wallet.address);
   }
 
   async getChainId(): Promise<number> {
@@ -157,3 +252,4 @@ export class HorseLinkWalletConnector extends Connector<
     return this.getWallet();
   }
 }
+*/

@@ -1,6 +1,5 @@
-import { BigNumber } from "ethers";
-import { Address } from "wagmi";
 import { VaultInfo } from "horselink-sdk";
+import { Address } from "viem";
 
 export type ProtocolAddresses = {
   registry: Address;
@@ -14,16 +13,16 @@ export type TokenInfo = {
   address: Address;
   decimals: number;
   owner: Address;
-  totalSupply: BigNumber;
+  totalSupply: bigint;
 };
 
 export type MarketInfo = {
   owner: Address;
   address: Address;
-  fee: BigNumber;
-  inPlayCount: BigNumber;
-  totalExposure: BigNumber;
-  totalInPlay: BigNumber;
+  fee: bigint;
+  inPlayCount: bigint;
+  totalExposure: bigint;
+  totalInPlay: bigint;
   vaultAddress: Address;
 };
 

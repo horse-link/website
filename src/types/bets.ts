@@ -1,9 +1,7 @@
 import { ERC20, Market } from "../typechain";
 import { EcSignature } from "./general";
-
 import { BackParams } from "./meets";
-import { Address } from "wagmi";
-import { Hash } from "@wagmi/core";
+import { Address, Hash } from "viem";
 
 export type ScratchedRunner = {
   b16propositionId: string;

@@ -25,7 +25,7 @@ type Props = {
 };
 
 const defaultUserBalance: UserBalance = {
-  value: 0n, // Changed from ethers.constants.Zero to 0n
+  value: 0n, // Changed from 0n to 0n
   decimals: 6,
   formatted: "0.0000"
 };
@@ -369,7 +369,7 @@ export const BetModal: React.FC<Props> = ({
       const bn = ethers.parseUnits(formatted, betVault.asset.decimals);
 
       return sum + bn; // Changed from sum.add(bn) to sum + bn
-    }, 0n); // Changed from ethers.constants.Zero to 0n
+    }, 0n); // Changed from 0n to 0n
 
     const marketVault = utils.config.getVaultFromMarket(market, config);
     if (!marketVault)

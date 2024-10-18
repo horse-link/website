@@ -43,10 +43,7 @@ export const useUserStatistics = () => {
   const totalDeposited = useMemo(() => {
     if (!deposits) return;
 
-    return deposits.reduce(
-      (sum, cur) => sum.add(cur.assets),
-      ethers.constants.Zero
-    );
+    return deposits.reduce((sum, cur) => sum.add(cur.assets), 0n);
   }, [deposits]);
 
   // get total inplay
@@ -55,7 +52,7 @@ export const useUserStatistics = () => {
 
     return bets
       .filter(b => !b.settled)
-      .reduce((sum, cur) => sum.add(cur.amount), ethers.constants.Zero);
+      .reduce((sum, cur) => sum.add(cur.amount), 0n);
   }, [bets]);
 
   // get pnl
@@ -71,7 +68,7 @@ export const useUserStatistics = () => {
         if (!isWin) delta = delta.mul(-1);
 
         return sum.add(delta);
-      }, ethers.constants.Zero);
+      }, 0n);
   }, [bets]);
 
   return {

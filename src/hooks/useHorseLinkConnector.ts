@@ -1,15 +1,13 @@
-import { Chain } from "wagmi";
 import { useLocalWallet } from "./useLocalWallet";
-import { HorseLinkWalletConnector } from "../constants/wagmi";
+import { horseLinkWalletConnector } from "../constants/wagmi";
+import { Chain } from "wagmi/chains";
 
 export const useHorseLinkConnector = (chains: Array<Chain>) => {
   const { wallet, setChain } = useLocalWallet(chains);
 
-  return new HorseLinkWalletConnector({
-    chains,
-    options: {
-      wallet,
-      setChain
-    }
+  return horseLinkWalletConnector({
+    wallet,
+    setChain,
+    chains
   });
 };

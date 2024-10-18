@@ -8,20 +8,20 @@ export const useMarketStatistics = () => {
   const statsData = usePromise(api.getMarketStats);
 
   const totalBets = useMemo(() => {
-    if (!statsData) return ethers.constants.Zero;
+    if (!statsData) return 0n;
 
     return statsData.totalBets;
   }, [statsData]);
 
   const totalVolume = useMemo(() => {
-    if (!statsData) return ethers.constants.Zero;
+    if (!statsData) return 0n;
 
     const totalVolume = statsData.totalVolume;
     return totalVolume;
   }, [statsData]);
 
   const largestBet = useMemo(() => {
-    if (!statsData) return ethers.constants.Zero;
+    if (!statsData) return 0n;
 
     // const largestBet = BigNumber.from(statsData.largestBet);
     const largestBet = statsData.largestBet;
@@ -29,7 +29,7 @@ export const useMarketStatistics = () => {
   }, [statsData]);
 
   const profit = useMemo(() => {
-    if (!statsData) return ethers.constants.Zero;
+    if (!statsData) return 0n;
 
     return statsData.profit;
   }, [statsData]);

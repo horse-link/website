@@ -176,7 +176,7 @@ export const useSubgraphBets = (
 
       const totalBetValue = array.reduce(
         (sum, cur) => sum.add(ethers.parseEther(cur.amount)),
-        ethers.constants.Zero
+        0n
       );
 
       const proportion = amount

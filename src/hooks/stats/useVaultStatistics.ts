@@ -57,7 +57,7 @@ export const useVaultStatistics = () => {
 
     return vaultsTransactionData.deposits.reduce(
       (sum, curr) => sum.add(curr?.assets || "0"),
-      ethers.constants.Zero
+      0n
     );
   }, [vaultsTransactionData]);
 
@@ -66,14 +66,13 @@ export const useVaultStatistics = () => {
 
     return vaultsTransactionData.withdraws.reduce(
       (sum, curr) => sum.add(curr?.assets || "0"),
-      ethers.constants.Zero
+      0n
     );
   }, [vaultsTransactionData]);
 
   const totalVaultVolume = useMemo(() => {
     if (!vaultsTransactionData) return;
-    if (!totalVaultDeposits || !totalVaultWithdrawals)
-      return ethers.constants.Zero;
+    if (!totalVaultDeposits || !totalVaultWithdrawals) return 0n;
 
     return totalVaultDeposits.add(totalVaultWithdrawals);
   }, [vaultsTransactionData, totalVaultDeposits, totalVaultWithdrawals]);
@@ -97,7 +96,7 @@ export const useVaultStatistics = () => {
       );
       const exposure = assets.reduce(
         (sum, cur) => sum.add(ethers.parseEther(cur)),
-        ethers.constants.Zero
+        0n
       );
       setTotalVaultsExposure(exposure);
     })();

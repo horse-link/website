@@ -49,7 +49,7 @@ export const useSubgraphVaults = () => {
     .forEach(deposit => {
       history.push({
         type: VaultTransactionType.DEPOSIT,
-        amount: deposit.assets || ethers.constants.Zero,
+        amount: deposit.assets || 0n,
         createdAt: deposit.createdAt || 0,
         vaultAddress: deposit.vault || ethers.constants.AddressZero,
         tx: deposit.id || ""
@@ -61,7 +61,7 @@ export const useSubgraphVaults = () => {
     .forEach(withdraw => {
       history.push({
         type: VaultTransactionType.WITHDRAW,
-        amount: withdraw.assets || ethers.constants.Zero,
+        amount: withdraw.assets || 0n,
         createdAt: withdraw.createdAt || 0,
         vaultAddress: withdraw.vault || ethers.constants.AddressZero,
         tx: withdraw.id || ""

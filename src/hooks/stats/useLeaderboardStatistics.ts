@@ -52,7 +52,7 @@ export const useLeaderboardStatistics = () => {
     // }
     // key: user address, value: sum of payouts as a BN
     const reduced = bets.reduce((prevObject, bet) => {
-      const prevValue = prevObject[bet.owner] || ethers.constants.Zero;
+      const prevValue = prevObject[bet.owner] || 0n;
 
       const winChange = ethers.parseEther(ethers.formatEther(bet.payout));
       const lossChange = ethers.utils

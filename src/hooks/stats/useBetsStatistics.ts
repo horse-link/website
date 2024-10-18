@@ -18,14 +18,11 @@ export const useBetsStatistics = () => {
   //Winning volume bets on the bets page
   const totalWinningVolume = useMemo(() => {
     if (!betsData) return;
-    if (!totalWinningBets) return ethers.constants.Zero;
+    if (!totalWinningBets) return 0n;
 
     const amountBigNumbers = betsData.map(bet => BigNumber.from(bet.payout));
 
-    return amountBigNumbers.reduce(
-      (sum, value) => sum.add(value),
-      ethers.constants.Zero
-    );
+    return amountBigNumbers.reduce((sum, value) => sum.add(value), 0n);
   }, [betsData, totalWinningBets]);
 
   //Largest winning bet on the bets page

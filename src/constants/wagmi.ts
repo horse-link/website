@@ -21,7 +21,7 @@ export const horseLinkWalletConnector = ({
     name: "HorseLink Wallet",
     type: "horselinkwallet",
 
-    connect: async ({ chainId }) => {
+    connect: async ({ chainId }: { chainId?: number }) => {
       const provider = await getProvider();
       const account = await getAccount();
       const id = chainId || (await getChainId());

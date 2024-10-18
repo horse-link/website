@@ -13,7 +13,7 @@ import { useConfig } from "./Config";
 import dayjs from "dayjs";
 import isYesterday from "dayjs/plugin/isYesterday";
 import { BetSlipTxModal } from "../components/Modals";
-import { BigNumber, Signer } from "ethers";
+import { Signer } from "ethers";
 import utils from "../utils";
 
 dayjs.extend(isYesterday);
@@ -225,12 +225,7 @@ export const BetSlipContextProvider: React.FC<{ children: ReactNode }> = ({
       let tx,
         error: string | undefined = undefined;
       try {
-        tx = await placeBet(
-          bet.market,
-          bet.back,
-          BigNumber.from(bet.wager),
-          signer
-        );
+        tx = await placeBet(bet.market, bet.back, bet.wager, signer);
       } catch (err: any) {
         console.error(err);
         error = err as string;

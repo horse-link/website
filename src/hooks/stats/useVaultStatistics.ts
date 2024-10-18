@@ -88,7 +88,7 @@ export const useVaultStatistics = () => {
         config.vaults.map(async v => {
           try {
             const balance = await totalAssetsLocked(v, provider);
-            return ethers.utils.formatUnits(balance, v.asset.decimals);
+            return ethers.formatUnits(balance, v.asset.decimals);
           } catch (e) {
             console.log(e);
             return "0";
@@ -96,7 +96,7 @@ export const useVaultStatistics = () => {
         })
       );
       const exposure = assets.reduce(
-        (sum, cur) => sum.add(ethers.utils.parseEther(cur)),
+        (sum, cur) => sum.add(ethers.parseEther(cur)),
         ethers.constants.Zero
       );
       setTotalVaultsExposure(exposure);

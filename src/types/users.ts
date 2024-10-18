@@ -1,7 +1,5 @@
-import { BigNumber } from "ethers";
-
 export type UserBalance = {
-  value: BigNumber;
+  value: bigint;
   decimals: number;
   formatted: string;
 };

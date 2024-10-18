@@ -1,8 +1,6 @@
-import { BigNumber } from "ethers";
-
 export type FaucetBalance = {
   name: string;
   symbol: string;
-  amount: BigNumber;
+  amount: bigint;
   decimals: number;
 };

@@ -1,7 +1,5 @@
-import { BigNumber } from "ethers";
 import { VaultInfo } from "horselink-sdk";
-import { Hash } from "@wagmi/core";
-import { Address } from "wagmi";
+import { AddressString, HashString } from "./subgraph";
 
 export type Vault = {
   name: string;
@@ -12,8 +10,8 @@ export type Vault = {
 
 export type VaultUserData = {
   percentage: string;
-  userShareBalance: BigNumber;
-  userAssetBalance: BigNumber;
+  userShareBalance: bigint;
+  userAssetBalance: bigint;
 };
 
 export enum VaultTransactionType {
@@ -29,18 +27,18 @@ export type VaultModalState = {
 };
 
 export type VaultTransaction = {
-  id: Hash;
+  id: HashString;
   type: VaultTransactionType;
-  vaultAddress: Address;
-  userAddress: Address;
-  amount: BigNumber;
+  vaultAddress: AddressString; // "0x${string}"
+  userAddress: AddressString; // "0x${string}"
+  amount: bigint;
   timestamp: number;
 };
 
 export type VaultHistory = {
   type: VaultTransactionType;
-  amount: BigNumber;
+  amount: bigint;
   createdAt: number;
-  vaultAddress: string;
-  tx: string;
+  vaultAddress: AddressString; // "0x${string}"
+  tx: HashString;
 }[];

@@ -37,7 +37,7 @@ export const MarketTable: React.FC = () => {
         const style = "w-full text-left py-4";
 
         const totalInPlay = `${formatting.formatToFourDecimals(
-          ethers.utils.formatUnits(market.totalInPlay, vault.asset.decimals)
+          ethers.formatUnits(market.totalInPlay, vault.asset.decimals)
         )} ${vault.asset.symbol}`;
 
         const data = [vault.name, totalInPlay];
@@ -116,10 +116,7 @@ export const MarketTable: React.FC = () => {
                 );
 
               const totalInPlay = `${formatting.formatToFourDecimals(
-                ethers.utils.formatUnits(
-                  market.totalInPlay,
-                  vault.asset.decimals
-                )
+                ethers.formatUnits(market.totalInPlay, vault.asset.decimals)
               )} ${vault.asset.symbol}`;
 
               return (

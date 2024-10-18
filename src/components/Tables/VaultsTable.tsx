@@ -74,7 +74,7 @@ export const VaultsTable: React.FC<Props> = ({ setIsModalOpen }) => {
             getIndividualShareTotal(info, signer)
           ]);
 
-          const percentageTotal = ethers.utils.formatUnits(
+          const percentageTotal = ethers.formatUnits(
             userShareTotal.mul("100").div(info.totalSupply.add("1")),
             2
           );
@@ -121,7 +121,7 @@ export const VaultsTable: React.FC<Props> = ({ setIsModalOpen }) => {
   const rows = vaultInfoList?.length
     ? vaultInfoList.map((vault, i) => {
         const tvl = `${formatting.formatToFourDecimals(
-          ethers.utils.formatUnits(
+          ethers.formatUnits(
             // vault.totalAssets.add(vault.totalAssetsLocked),
             vault.totalAssets,
             vault.asset.decimals
@@ -131,7 +131,7 @@ export const VaultsTable: React.FC<Props> = ({ setIsModalOpen }) => {
         const myShares = formatting.formatToFourDecimals(
           vault.userShareTotal
             ? (
-                +ethers.utils.formatUnits(
+                +ethers.formatUnits(
                   vault.userShareTotal,
                   vault.asset.decimals
                 ) / 100
@@ -141,10 +141,7 @@ export const VaultsTable: React.FC<Props> = ({ setIsModalOpen }) => {
 
         const myValue = formatting.formatToFourDecimals(
           vault.userAssetTotal
-            ? ethers.utils.formatUnits(
-                vault.userAssetTotal,
-                vault.asset.decimals
-              )
+            ? ethers.formatUnits(vault.userAssetTotal, vault.asset.decimals)
             : "0"
         );
 
@@ -240,7 +237,7 @@ export const VaultsTable: React.FC<Props> = ({ setIsModalOpen }) => {
           <div className="flex w-full flex-col items-center">
             {vaultInfoList.map(vault => {
               const tvl = `${formatting.formatToFourDecimals(
-                ethers.utils.formatUnits(
+                ethers.formatUnits(
                   vault.totalAssets.add(vault.totalAssetsLocked),
                   vault.asset.decimals
                 )

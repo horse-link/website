@@ -85,26 +85,23 @@ export const recoverSigSigner = (
   propositionId: string,
   signature: EcSignature,
   config: Config,
-  odds?: ethers.BigNumber,
-  totalOdds?: ethers.BigNumber
+  odds?: bigint,
+  totalOdds?: bigint
 ) => {
   let messageHash;
   if (odds && totalOdds) {
-    messageHash = ethers.utils.solidityKeccak256(
+    messageHash = ethers.solidityPackedKeccak256(
       ["bytes16", "bytes16", "uint256", "uint256"],
       [marketId, propositionId, odds, totalOdds]
     );
   } else {
-    messageHash = ethers.utils.solidityKeccak256(
+    messageHash = ethers.solidityPackedKeccak256(
       ["bytes16", "bytes16"],
       [marketId, propositionId]
     );
   }
 
-  const address = ethers.utils.verifyMessage(
-    ethers.utils.arrayify(messageHash),
-    signature
-  );
+  const address = ethers.verifyMessage(ethers.getBytes(messageHash), signature);
 
   return address.toLowerCase() === config.addresses.ownerAddress.toLowerCase();
 };

@@ -76,7 +76,7 @@ const History: React.FC = () => {
             data={
               totalWinningVolume &&
               `$${formatting.formatToFourDecimals(
-                ethers.utils.formatEther(totalWinningVolume)
+                ethers.formatEther(totalWinningVolume)
               )}`
             }
           />
@@ -86,7 +86,7 @@ const History: React.FC = () => {
             data={
               largestWinningBet &&
               `$${formatting.formatToFourDecimals(
-                ethers.utils.formatEther(
+                ethers.formatEther(
                   largestWinningBet?.payout || ethers.constants.Zero
                 )
               )}`

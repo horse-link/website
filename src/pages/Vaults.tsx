@@ -28,7 +28,7 @@ const Vaults: React.FC = () => {
           data={
             totalVaultVolume &&
             `$${formatting.formatToFourDecimals(
-              ethers.utils.formatEther(totalVaultVolume)
+              ethers.formatEther(totalVaultVolume)
             )}`
           }
         />
@@ -37,7 +37,7 @@ const Vaults: React.FC = () => {
           data={
             totalVaultsExposure &&
             `$${formatting.formatToFourDecimals(
-              ethers.utils.formatEther(totalVaultsExposure)
+              ethers.formatEther(totalVaultsExposure)
             )}`
           }
         />
@@ -46,7 +46,7 @@ const Vaults: React.FC = () => {
           data={
             totalVaultDeposits &&
             `$${formatting.formatToFourDecimals(
-              ethers.utils.formatEther(totalVaultDeposits)
+              ethers.formatEther(totalVaultDeposits)
             )}`
           }
         />
@@ -55,7 +55,7 @@ const Vaults: React.FC = () => {
           data={
             totalVaultWithdrawals &&
             `$${formatting.formatToFourDecimals(
-              ethers.utils.formatEther(totalVaultWithdrawals)
+              ethers.formatEther(totalVaultWithdrawals)
             )}`
           }
         />

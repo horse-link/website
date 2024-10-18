@@ -103,9 +103,7 @@ export const BetTable: React.FC<Props> = ({
               className={style}
               onClick={() => onClickBet(bet)}
             >
-              {formatting.formatToFourDecimals(
-                ethers.utils.formatEther(bet.amount)
-              )}
+              {formatting.formatToFourDecimals(ethers.formatEther(bet.amount))}
             </div>,
             <div
               key={`racetable-bet-${bet.index}-${i}-payout`}
@@ -115,7 +113,7 @@ export const BetTable: React.FC<Props> = ({
               {bet.result === "LOSE"
                 ? "0"
                 : formatting.formatToFourDecimals(
-                    ethers.utils.formatEther(bet.payout)
+                    ethers.formatEther(bet.payout)
                   )}
             </div>,
             <div
@@ -243,7 +241,7 @@ export const BetTable: React.FC<Props> = ({
                   <p>{bet.proposition}</p>
                   <p className="text-hl-secondary">
                     {formatting.formatToFourDecimals(
-                      ethers.utils.formatEther(
+                      ethers.formatEther(
                         betDidWin === true ? bet.payout : bet.amount
                       )
                     )}

@@ -43,7 +43,7 @@ export const LeaderboardTable: React.FC<Props> = ({ stats, balances }) => {
           const style = "w-full text-left py-4";
 
           const earnings = `${formatting.formatToFourDecimalsRaw(
-            ethers.utils.formatEther(stat.value)
+            ethers.formatEther(stat.value)
           )} HL`;
 
           const bal = `${formatting.formatToFourDecimals(

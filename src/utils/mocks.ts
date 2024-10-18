@@ -5,22 +5,22 @@ import { SignedBetDataResponse } from "../types/bets";
 import { Meet, Race, RaceStatus } from "horselink-sdk";
 
 export const getMockBet = (): Bet => ({
-  id: `BET_${ethers.constants.AddressZero}_0`,
-  propositionId: ethers.constants.HashZero,
-  marketId: ethers.constants.HashZero,
-  asset: ethers.constants.AddressZero,
-  amount: ethers.constants.Zero,
-  payout: ethers.constants.Zero,
+  id: `BET_${ethers.ZeroAddress}_0`,
+  propositionId: ethers.ZeroHash,
+  marketId: ethers.ZeroHash,
+  asset: ethers.ZeroAddress,
+  amount: 0n,
+  payout: 0n,
   payoutAt: 30 * 60,
-  market: ethers.constants.AddressZero,
-  owner: ethers.constants.AddressZero,
-  recipient: ethers.constants.AddressZero,
+  market: ethers.ZeroAddress,
+  owner: ethers.ZeroAddress,
+  recipient: ethers.ZeroAddress,
   settled: false,
   result: BetResult.INPLAY,
   createdAt: 0,
   settledAt: 0,
-  createdAtTx: ethers.constants.HashZero,
-  settledAtTx: ethers.constants.HashZero,
+  createdAtTx: ethers.ZeroHash,
+  settledAtTx: ethers.ZeroHash,
   refunded: false
 });
 
@@ -30,8 +30,8 @@ export const getRealExampleMockBet = (): Bet => ({
   marketId: "0x30313933383943425930310000000000",
   market: "0xb5ee5025c830333faec0c0edc3d1c3be2e85e331",
   asset: "0xf9f36c66854010d61e8f46f9cc46f9ed55996229",
-  amount: ethers.utils.parseEther("2"),
-  payout: ethers.utils.parseEther("16.268426"),
+  amount: ethers.parseEther("2"),
+  payout: ethers.parseEther("16.268426"),
   payoutAt: 1675226100,
   owner: "0x042bc2d085c0584bd56d62c170c4679e1ee9fc45",
   recipient: "0xb5ee5025c830333faec0c0edc3d1c3be2e85e331",
@@ -70,10 +70,10 @@ export const getMockSignedBetDataResponse = (): SignedBetDataResponse => ({
 });
 
 export const getMockUser = () => ({
-  id: ethers.constants.AddressZero,
-  totalDeposited: ethers.constants.Zero,
-  inPlay: ethers.constants.Zero,
-  pnl: ethers.constants.Zero,
+  id: ethers.ZeroAddress,
+  totalDeposited: 0n,
+  inPlay: 0n,
+  pnl: 0n,
   lastUpdate: 0
 });
 
@@ -90,7 +90,7 @@ export const getMockBack = (): Back => ({
 export const getMockRunners = () => Array.from({ length: 5 }, () => undefined);
 
 export const getMockAddresses = () =>
-  Array.from({ length: 5 }, () => ethers.constants.AddressZero);
+  Array.from({ length: 5 }, () => ethers.ZeroAddress);
 
 export const getMockRaces = (length?: number): Race[] =>
   Array.from({ length: length ?? 15 }, (_, i) => ({

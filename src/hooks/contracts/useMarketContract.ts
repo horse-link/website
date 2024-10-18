@@ -47,7 +47,7 @@ export const useMarketContract = () => {
             d => d.market.address.toLowerCase() === marketAddress.toLowerCase()
           )
           .reduce((acc, curr) => {
-            // return acc.add(ethers.utils.parseUnits(curr.wager, decimals));
+            // return acc.add(ethers.parseUnits(curr.wager, decimals));
             return acc.add(curr.wager);
           }, BigNumber.from(0));
         const backs = data
@@ -110,7 +110,7 @@ export const useMarketContract = () => {
             propositionId: formatting.formatBytes16String(back.proposition_id),
             marketId: formatting.formatBytes16String(back.market_id),
             wager: back.wager,
-            odds: ethers.utils.parseUnits(
+            odds: ethers.parseUnits(
               back.odds.toString(),
               constants.contracts.MARKET_ODDS_DECIMALS
             ),
@@ -186,7 +186,7 @@ export const useMarketContract = () => {
       propositionId: formatting.formatBytes16String(back.proposition_id),
       marketId: formatting.formatBytes16String(back.market_id),
       wager,
-      odds: ethers.utils.parseUnits(
+      odds: ethers.parseUnits(
         back.odds.toString(),
         constants.contracts.MARKET_ODDS_DECIMALS
       ),
@@ -324,7 +324,7 @@ export const useMarketContract = () => {
           bet.propositionId,
           bet.scratched.signature,
           config,
-          ethers.utils.parseUnits(
+          ethers.parseUnits(
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
@@ -337,7 +337,7 @@ export const useMarketContract = () => {
         marketOracleContract.estimateGas.setScratchedResult(
           formatting.formatBytes16String(marketId),
           bet.propositionId,
-          ethers.utils.parseUnits(
+          ethers.parseUnits(
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
@@ -352,7 +352,7 @@ export const useMarketContract = () => {
         await marketOracleContract.setScratchedResult(
           formatting.formatBytes16String(marketId),
           bet.propositionId,
-          ethers.utils.parseUnits(
+          ethers.parseUnits(
             bet.scratched.odds.toString(),
             constants.contracts.MARKET_ODDS_DECIMALS
           ),
@@ -389,7 +389,7 @@ export const useMarketContract = () => {
   ): Promise<BigNumber> => {
     const marketContract = Market__factory.connect(market.address, signer);
 
-    const odds: BigNumber = ethers.utils.parseUnits(
+    const odds: BigNumber = ethers.parseUnits(
       back.odds.toString(),
       constants.contracts.MARKET_ODDS_DECIMALS
     );
@@ -410,7 +410,7 @@ export const useMarketContract = () => {
     signer: Signer
   ): Promise<string> => {
     const marketContract = Market__factory.connect(market.address, signer);
-    const odds: BigNumber = ethers.utils.parseUnits(
+    const odds: BigNumber = ethers.parseUnits(
       bet.scratched!.odds.toFixed(constants.contracts.MARKET_ODDS_DECIMALS),
       constants.contracts.MARKET_ODDS_DECIMALS
     );

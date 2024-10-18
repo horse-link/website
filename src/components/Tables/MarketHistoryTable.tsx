@@ -80,9 +80,7 @@ export const MarketHistoryTable: React.FC = () => {
             key={`markethistorytable-${h.amount.toString()}-${i}`}
             className="w-full py-4 text-left"
           >
-            {formatting.formatToFourDecimals(
-              ethers.utils.formatEther(h.amount)
-            )}
+            {formatting.formatToFourDecimals(ethers.formatEther(h.amount))}
           </div>,
           <div
             key={`markethistorytable-${h.createdAt}-${i}`}
@@ -147,7 +145,7 @@ export const MarketHistoryTable: React.FC = () => {
                 </h2>
                 <p>
                   {formatting.formatToFourDecimals(
-                    ethers.utils.formatEther(h.amount)
+                    ethers.formatEther(h.amount)
                   )}
                 </p>
                 <a

@@ -69,7 +69,7 @@ const Faucet: React.FC = () => {
               key={b.name}
               title={b.name}
               data={`${formatting.formatToFourDecimals(
-                ethers.utils.formatUnits(b.amount, b.decimals)
+                ethers.formatUnits(b.amount, b.decimals)
               )} ${b.symbol}`}
             />
           ))}

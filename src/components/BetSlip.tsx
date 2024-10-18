@@ -76,17 +76,17 @@ export const BetSlip: React.FC = () => {
             );
 
           const name = vault.asset.address;
-          const payoutUnits = ethers.utils.formatUnits(
+          const payoutUnits = ethers.formatUnits(
             currentPayout.payout,
             vault.asset.decimals
           );
-          const parsedPayoutUnits = ethers.utils.parseEther(payoutUnits);
+          const parsedPayoutUnits = ethers.parseEther(payoutUnits);
 
-          const stakeUnits = ethers.utils.formatUnits(
+          const stakeUnits = ethers.formatUnits(
             currentPayout.stake,
             vault.asset.decimals
           );
-          const parsedStakedUnits = ethers.utils.parseEther(stakeUnits);
+          const parsedStakedUnits = ethers.parseEther(stakeUnits);
 
           return {
             ...previousPayout,
@@ -134,10 +134,7 @@ export const BetSlip: React.FC = () => {
                       </p>
                       <p className="text-hl-tertiary">
                         {formatting.formatToFourDecimals(
-                          ethers.utils.formatUnits(
-                            bet.wager,
-                            vault?.asset.decimals
-                          )
+                          ethers.formatUnits(bet.wager, vault?.asset.decimals)
                         )}{" "}
                         {vault?.asset.symbol || "Token"}
                       </p>
@@ -177,7 +174,7 @@ export const BetSlip: React.FC = () => {
                     {Object.entries(slipTotals).map(([symbol, details]) => (
                       <span className="block text-right" key={symbol}>
                         {formatting.formatToFourDecimals(
-                          ethers.utils.formatEther(details.payout)
+                          ethers.formatEther(details.payout)
                         )}
                         {` ${details.symbol}`}
                       </span>
@@ -190,7 +187,7 @@ export const BetSlip: React.FC = () => {
                     {Object.entries(slipTotals).map(([symbol, details]) => (
                       <span className="block text-right" key={symbol}>
                         {formatting.formatToFourDecimals(
-                          ethers.utils.formatEther(details.stake)
+                          ethers.formatEther(details.stake)
                         )}
                         {` ${details.symbol}`}
                       </span>

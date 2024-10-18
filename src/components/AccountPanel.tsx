@@ -58,6 +58,7 @@ export const AccountPanel: React.FC<Props> = ({
   const togglePrivateKey = () => setShowPrivateKey(prev => !prev);
 
   useEffect(() => {
+    //debugger;
     if (!currentToken || !signer) return;
 
     setUserBalance(undefined);
@@ -66,7 +67,7 @@ export const AccountPanel: React.FC<Props> = ({
         value: balance,
         decimals: +currentToken.decimals,
         formatted: formatting.formatToFourDecimals(
-          ethers.utils.formatUnits(balance, currentToken.decimals)
+          ethers.formatUnits(balance, currentToken.decimals)
         )
       })
     );

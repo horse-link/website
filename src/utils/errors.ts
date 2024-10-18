@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ErrorCode } from "ethers";
 
 enum ContractError {
   BackInvalidDate = "back: Invalid date",
@@ -54,30 +54,33 @@ const DEFAULT_BLOCKCHAIN_ERROR =
 const DEFAULT_ERROR_MESSAGE =
   "Something went wrong. Please refresh the page and try again. If the issue persists, please contact us.";
 
-const ethersErrorLookup: Record<ethers.errors, string> = {
-  [ethers.errors.ACTION_REJECTED]:
+const ethersErrorLookup: Record<ErrorCode, string> = {
+  ACTION_REJECTED:
     "It looks like you rejected the transaction. Please try again.",
-  [ethers.errors.NETWORK_ERROR]:
+  NETWORK_ERROR:
     "We're having trouble connecting to the network. Please check your internet connection and try again.",
-  [ethers.errors.INSUFFICIENT_FUNDS]:
+  INSUFFICIENT_FUNDS:
     "You don't have enough 'gas' to send this transaction. You can get some more through the faucet.",
-  [ethers.errors.UNPREDICTABLE_GAS_LIMIT]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.CALL_EXCEPTION]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.SERVER_ERROR]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.TIMEOUT]:
+  CALL_EXCEPTION: DEFAULT_BLOCKCHAIN_ERROR,
+  SERVER_ERROR: DEFAULT_BLOCKCHAIN_ERROR,
+  TIMEOUT:
     "We're having trouble connecting to the network. Please check your internet connection and try again.",
-  [ethers.errors.UNKNOWN_ERROR]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.NOT_IMPLEMENTED]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.UNSUPPORTED_OPERATION]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.BUFFER_OVERRUN]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.NUMERIC_FAULT]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.MISSING_NEW]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.INVALID_ARGUMENT]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.MISSING_ARGUMENT]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.UNEXPECTED_ARGUMENT]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.NONCE_EXPIRED]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.REPLACEMENT_UNDERPRICED]: DEFAULT_BLOCKCHAIN_ERROR,
-  [ethers.errors.TRANSACTION_REPLACED]: DEFAULT_BLOCKCHAIN_ERROR
+  UNKNOWN_ERROR: DEFAULT_BLOCKCHAIN_ERROR,
+  NOT_IMPLEMENTED: DEFAULT_BLOCKCHAIN_ERROR,
+  UNSUPPORTED_OPERATION: DEFAULT_BLOCKCHAIN_ERROR,
+  BUFFER_OVERRUN: DEFAULT_BLOCKCHAIN_ERROR,
+  NUMERIC_FAULT: DEFAULT_BLOCKCHAIN_ERROR,
+  INVALID_ARGUMENT: DEFAULT_BLOCKCHAIN_ERROR,
+  MISSING_ARGUMENT: DEFAULT_BLOCKCHAIN_ERROR,
+  UNEXPECTED_ARGUMENT: DEFAULT_BLOCKCHAIN_ERROR,
+  NONCE_EXPIRED: DEFAULT_BLOCKCHAIN_ERROR,
+  REPLACEMENT_UNDERPRICED: DEFAULT_BLOCKCHAIN_ERROR,
+  TRANSACTION_REPLACED: DEFAULT_BLOCKCHAIN_ERROR,
+  UNCONFIGURED_NAME: DEFAULT_BLOCKCHAIN_ERROR,
+  OFFCHAIN_FAULT: DEFAULT_BLOCKCHAIN_ERROR,
+  BAD_DATA: DEFAULT_BLOCKCHAIN_ERROR,
+  CANCELLED: DEFAULT_BLOCKCHAIN_ERROR,
+  VALUE_MISMATCH: DEFAULT_BLOCKCHAIN_ERROR
 };
 
 export const getMeaningfulMessage = (error: any) => {
@@ -89,8 +92,8 @@ export const getMeaningfulMessage = (error: any) => {
   if (contractError) {
     return contractErrorLookup[contractError as ContractError];
   }
-  if (error?.code && ethersErrorLookup[error?.code as ethers.errors]) {
-    return ethersErrorLookup[error.code as ethers.errors];
+  if (error?.code && error.code in ethersErrorLookup) {
+    return ethersErrorLookup[error.code as keyof typeof ethersErrorLookup];
   }
   return DEFAULT_ERROR_MESSAGE;
 };

@@ -47,7 +47,7 @@ const Leaderboard: React.FC = () => {
 
   const earnings = userStats?.earnings.value
     ? `${formatting.formatToFourDecimalsRaw(
-        ethers.utils.formatEther(userStats.earnings.value)
+        ethers.formatEther(userStats.earnings.value)
       )} HL`
     : undefined;
 

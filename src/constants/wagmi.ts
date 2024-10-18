@@ -112,7 +112,7 @@ export class HorseLinkWalletConnector extends Connector<
       return;
     }
 
-    this.emit("change", { account: ethers.utils.getAddress(accounts[0]) });
+    this.emit("change", { account: ethers.getAddress(accounts[0]) });
   }
 
   protected onChainChanged(chain: string | number): void {
@@ -132,7 +132,7 @@ export class HorseLinkWalletConnector extends Connector<
   // getters
   async getAccount() {
     const wallet = await this.getWallet();
-    return ethers.utils.getAddress(wallet.address);
+    return ethers.getAddress(wallet.address);
   }
 
   async getChainId(): Promise<number> {

@@ -50,7 +50,7 @@ export const DepositVaultModal: React.FC<Props> = ({
         value: balance,
         decimals,
         formatted: formatting.formatToFourDecimals(
-          ethers.utils.formatUnits(balance, decimals)
+          ethers.formatUnits(balance, decimals)
         )
       });
     })();
@@ -96,7 +96,7 @@ export const DepositVaultModal: React.FC<Props> = ({
   const onClickDeposit = async () => {
     if (!depositAmount || !userBalance || !signer) return;
 
-    const amount = ethers.utils.parseUnits(depositAmount, userBalance.decimals);
+    const amount = ethers.parseUnits(depositAmount, userBalance.decimals);
     setTxHash(undefined);
     setError(undefined);
 

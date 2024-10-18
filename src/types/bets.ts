@@ -1,4 +1,3 @@
-import { BigNumber } from "ethers";
 import { ERC20, Market } from "../typechain";
 import { EcSignature } from "./general";
 
@@ -95,8 +94,8 @@ export type BetTotals = Record<
   string,
   {
     symbol: string;
-    payout: BigNumber;
-    stake: BigNumber;
+    payout: bigint;
+    stake: bigint;
   }
 >;
 
@@ -105,7 +104,7 @@ export type MarketMultiBetInfo = {
   tokenContract: ERC20;
   marketContract: Market;
   assetAddress: string;
-  allowance: BigNumber;
-  totalWagers: BigNumber;
+  allowance: bigint;
+  totalWagers: bigint;
   backs: BackParams[];
 };

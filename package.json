@@ -37,7 +37,7 @@
     "crypto-js": "^4.2.0",
     "dayjs": "^1.11.7",
     "eth-gas-reporter": "^0.2.25",
-    "ethers": "^5.7.2",
+    "ethers": "^6.13.4",
     "graphql": "^16.6.0",
     "horselink-sdk": "^1.0.52",
     "moment": "^2.30.1",

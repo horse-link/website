@@ -1,7 +1,7 @@
-import { Hash } from "@wagmi/core";
-import { BigNumber } from "ethers";
-import { Address } from "wagmi";
 import { VaultTransaction } from "./vaults";
+
+export type AddressString = string;
+export type HashString = string;
 
 export type SubgraphValues = string | number | boolean;
 
@@ -35,12 +35,12 @@ export type Registry = {
   // id will always be registry
   id: "registry";
 
-  markets: Array<Address>;
-  vaults: Array<Address>;
+  markets: Array<AddressString>;
+  vaults: Array<AddressString>;
 };
 
 // bet id will be BET_<MARKET_ADDRESS>_<BET_NUMBER>
-export type BetId = `BET_${Address}_${number}`;
+export type BetId = `BET_${AddressString}_${number}`;
 
 // shadowed from contracts
 export const enum BetResult {
@@ -52,55 +52,55 @@ export const enum BetResult {
 
 export type Bet = {
   id: BetId;
-  asset: Address;
+  asset: AddressString;
   payoutAt: number;
-  market: Address;
+  market: AddressString;
   marketId: string;
   propositionId: string;
-  amount: BigNumber;
-  payout: BigNumber;
-  owner: Address;
+  amount: bigint;
+  payout: bigint;
+  owner: AddressString;
   createdAt: number;
-  createdAtTx: Hash;
+  createdAtTx: HashString;
   settled: boolean;
   result: BetResult;
-  recipient: Address;
+  recipient: AddressString;
   settledAt: number;
-  settledAtTx: Hash;
+  settledAtTx: HashString;
   refunded: boolean;
 };
 
 // leave these in for backwards compatibility
 export type Deposit = {
-  id: Hash;
-  vault: Address;
-  sender: Address;
-  owner: Address;
-  assets: BigNumber;
-  shares: BigNumber;
+  id: HashString;
+  vault: AddressString;
+  sender: AddressString;
+  owner: AddressString;
+  assets: bigint;
+  shares: bigint;
   createdAt: number;
 };
 
 export type Withdraw = {
-  id: Hash;
-  vault: Address;
-  sender: Address;
-  receiver: Address;
-  owner: Address;
-  assets: BigNumber;
-  shares: BigNumber;
+  id: HashString;
+  vault: AddressString;
+  sender: AddressString;
+  receiver: AddressString;
+  owner: AddressString;
+  assets: bigint;
+  shares: bigint;
   createdAt: number;
 };
 
 export type Borrow = {
-  id: Hash;
-  vaultAddress: Address;
+  id: HashString;
+  vaultAddress: AddressString;
   betIndex: number;
-  amount: BigNumber;
+  amount: bigint;
 };
 
 export type Repay = {
-  id: Hash;
-  vaultAddress: Address;
-  amount: BigNumber;
+  id: HashString;
+  vaultAddress: AddressString;
+  amount: bigint;
 };

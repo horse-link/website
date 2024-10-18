@@ -54,11 +54,9 @@ export const useLeaderboardStatistics = () => {
     const reduced = bets.reduce((prevObject, bet) => {
       const prevValue = prevObject[bet.owner] || ethers.constants.Zero;
 
-      const winChange = ethers.utils.parseEther(
-        ethers.utils.formatEther(bet.payout)
-      );
+      const winChange = ethers.parseEther(ethers.formatEther(bet.payout));
       const lossChange = ethers.utils
-        .parseEther(ethers.utils.formatEther(bet.amount))
+        .parseEther(ethers.formatEther(bet.amount))
         .mul("-1");
 
       return {
@@ -77,7 +75,7 @@ export const useLeaderboardStatistics = () => {
     );
 
     // sort the new array in place, comparison is in essence (a, b) => b - a
-    asArray.sort((a, b) => +ethers.utils.formatEther(b.value.sub(a.value)));
+    asArray.sort((a, b) => +ethers.formatEther(b.value.sub(a.value)));
 
     return asArray;
   }, [data, loading, hlToken, config]);
@@ -99,7 +97,7 @@ export const useLeaderboardStatistics = () => {
           address,
           value: balance,
           decimals,
-          formatted: ethers.utils.formatUnits(balance, decimals)
+          formatted: ethers.formatUnits(balance, decimals)
         };
       })
     )
@@ -131,12 +129,12 @@ export const useLeaderboardStatistics = () => {
           earnings: {
             value: userData.value,
             decimals,
-            formatted: ethers.utils.formatUnits(userData.value, decimals)
+            formatted: ethers.formatUnits(userData.value, decimals)
           },
           balance: {
             value: balance,
             decimals,
-            formatted: ethers.utils.formatUnits(balance, decimals)
+            formatted: ethers.formatUnits(balance, decimals)
           }
         })
       )

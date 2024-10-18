@@ -68,7 +68,7 @@ export const FaucetTable: React.FC<Props> = ({
           );
 
           const amount = `${formatting.formatToFourDecimals(
-            ethers.utils.formatUnits(
+            ethers.formatUnits(
               tokenBalance?.amount || ethers.constants.Zero,
               tokenBalance?.decimals
             )

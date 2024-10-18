@@ -172,10 +172,10 @@ export const useSubgraphBets = (
     const totalBets = bets.reduce((prevObject, bet, _, array) => {
       const amount = ethers.utils
         .parseEther(prevObject[bet.propositionId]?.amount || "0")
-        .add(ethers.utils.parseEther(bet.amount));
+        .add(ethers.parseEther(bet.amount));
 
       const totalBetValue = array.reduce(
-        (sum, cur) => sum.add(ethers.utils.parseEther(cur.amount)),
+        (sum, cur) => sum.add(ethers.parseEther(cur.amount)),
         ethers.constants.Zero
       );
 
@@ -186,8 +186,8 @@ export const useSubgraphBets = (
       return {
         ...prevObject,
         [bet.propositionId]: {
-          amount: ethers.utils.formatEther(amount),
-          percentage: +ethers.utils.formatEther(proportion) * 100
+          amount: ethers.formatEther(amount),
+          percentage: +ethers.formatEther(proportion) * 100
         }
       };
     }, {} as TotalBetsOnPropositions);

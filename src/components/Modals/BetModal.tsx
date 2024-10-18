@@ -25,7 +25,7 @@ type Props = {
 };
 
 const defaultUserBalance: UserBalance = {
-  value: ethers.constants.Zero,
+  value: 0n, // Changed from ethers.constants.Zero to 0n
   decimals: 6,
   formatted: "0.0000"
 };
@@ -48,7 +48,7 @@ export const BetModal: React.FC<Props> = ({
   const [winWagerAmount, setWinWagerAmount] = useState<string>();
   const [placeWagerAmount, setPlaceWagerAmount] = useState<string>();
 
-  const [payout, setPayout] = useState<ethers.BigNumber>(ethers.constants.Zero);
+  const [payout, setPayout] = useState<bigint>(0n); // Changed from ethers.BigNumber to bigint
   const { data: signer } = useSigner();
 
   const config = useConfig();
@@ -62,17 +62,17 @@ export const BetModal: React.FC<Props> = ({
 
   // If there is a win or place bet. zero values don't count
   const hasBet = (): Boolean => {
-    const winWager = ethers.utils.parseUnits(
+    const winWager = ethers.parseUnits(
       winWagerAmount || "0",
       userBalance.decimals
     );
 
-    const placeWager = ethers.utils.parseUnits(
+    const placeWager = ethers.parseUnits(
       placeWagerAmount || "0",
       userBalance.decimals
     );
 
-    return !winWager.isZero() || !placeWager.isZero();
+    return winWager !== 0n || placeWager !== 0n;
   };
 
   useEffect(() => {
@@ -123,29 +123,29 @@ export const BetModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (!market || !signer || !backWin) {
-      return setPayout(ethers.constants.Zero);
+      return setPayout(0n);
     }
 
     if (!winWagerAmount && !placeWagerAmount) {
-      return setPayout(ethers.constants.Zero);
+      return setPayout(0n);
     }
 
     (async () => {
-      setPayout(ethers.constants.Zero);
-      let calculatedPayout = ethers.constants.Zero;
+      setPayout(0n);
+      let calculatedPayout = 0n;
 
-      const placeWager = ethers.utils.parseUnits(
+      const placeWager = ethers.parseUnits(
         placeWagerAmount || "0",
         userBalance.decimals
       );
 
-      const winWager = ethers.utils.parseUnits(
+      const winWager = ethers.parseUnits(
         winWagerAmount || "0",
         userBalance.decimals
       );
 
       // do in parallel
-      if (!winWager.isZero()) {
+      if (winWager !== 0n) {
         const payout = await getPotentialPayout(
           market,
           winWager,
@@ -153,11 +153,11 @@ export const BetModal: React.FC<Props> = ({
           signer
         );
 
-        calculatedPayout = calculatedPayout.add(payout);
+        calculatedPayout = calculatedPayout + payout;
       }
 
       // do in parallel
-      if (!placeWager.isZero()) {
+      if (placeWager !== 0n) {
         const payout = await getPotentialPayout(
           market,
           placeWager,
@@ -165,10 +165,10 @@ export const BetModal: React.FC<Props> = ({
           signer
         );
 
-        calculatedPayout = calculatedPayout.add(payout);
+        calculatedPayout = calculatedPayout + payout;
       }
 
-      if (!calculatedPayout.isZero()) setPayout(calculatedPayout);
+      if (!calculatedPayout) setPayout(calculatedPayout);
     })();
   }, [
     market,
@@ -199,7 +199,7 @@ export const BetModal: React.FC<Props> = ({
         value: balance,
         decimals,
         formatted: formatting.formatToFourDecimals(
-          ethers.utils.formatUnits(balance, decimals)
+          ethers.formatUnits(balance, decimals)
         )
       });
     })();
@@ -264,7 +264,7 @@ export const BetModal: React.FC<Props> = ({
           `Could not find vault associated with market ${market.address}`
         );
 
-      const placeWager = ethers.utils.parseUnits(
+      const placeWager = ethers.parseUnits(
         placeWagerAmount || "0",
         userBalance.decimals
         // vault.asset.decimals
@@ -281,7 +281,7 @@ export const BetModal: React.FC<Props> = ({
         timestamp: Math.floor(Date.now() / 1000)
       };
 
-      const winWager = ethers.utils.parseUnits(
+      const winWager = ethers.parseUnits(
         winWagerAmount || "0",
         userBalance.decimals
         // vault.asset.decimals
@@ -364,15 +364,12 @@ export const BetModal: React.FC<Props> = ({
           `Could not find vault associated with market ${cur.market.address}`
         );
 
-      const formatted = ethers.utils.formatUnits(
-        cur.wager,
-        betVault.asset.decimals
-      );
+      const formatted = ethers.formatUnits(cur.wager, betVault.asset.decimals);
 
-      const bn = ethers.utils.parseUnits(formatted, betVault.asset.decimals);
+      const bn = ethers.parseUnits(formatted, betVault.asset.decimals);
 
-      return sum.add(bn);
-    }, ethers.constants.Zero);
+      return sum + bn; // Changed from sum.add(bn) to sum + bn
+    }, 0n); // Changed from ethers.constants.Zero to 0n
 
     const marketVault = utils.config.getVaultFromMarket(market, config);
     if (!marketVault)
@@ -380,19 +377,19 @@ export const BetModal: React.FC<Props> = ({
         `Could not find vault associated with market ${market.address}`
       );
 
-    const placeWager = ethers.utils.parseUnits(
+    const placeWager = ethers.parseUnits(
       placeWagerAmount || "0",
       userBalance.decimals
       // marketVault.asset.decimals
     );
 
-    const winWager = ethers.utils.parseUnits(
+    const winWager = ethers.parseUnits(
       winWagerAmount || "0",
       userBalance.decimals
       // marketVault.asset.decimals
     );
 
-    return marketSum.add(winWager).add(placeWager).gt(userBalance.value);
+    return marketSum + winWager + placeWager > userBalance.value; // Changed from .gt() to >
   }, [bets, placeWagerAmount, winWagerAmount, market, config, userBalance]);
 
   const isScratched = runner
@@ -474,7 +471,7 @@ export const BetModal: React.FC<Props> = ({
             <div className="grid w-full grid-cols-2 grid-rows-2 gap-2 pt-4">
               <h3 className="text-left text-hl-secondary">Payout:</h3>
               <p className="text-left text-hl-tertiary">
-                {ethers.utils.formatUnits(payout, userBalance?.decimals || 0)}
+                {ethers.formatUnits(payout, userBalance?.decimals || 0)}
               </p>
               <div className="flex items-center">
                 <h3 className="text-left text-hl-secondary">Available:</h3>

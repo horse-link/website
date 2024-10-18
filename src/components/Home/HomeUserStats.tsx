@@ -8,19 +8,19 @@ export const HomeUserStats: React.FC = () => {
 
   const formattedDeposits = stats?.totalDeposited
     ? `$${utils.formatting.formatNumberWithCommas(
-        ethers.utils.formatEther(stats.totalDeposited)
+        ethers.formatEther(stats.totalDeposited)
       )}`
     : undefined;
 
   const formattedInplay = stats?.inPlay
     ? `$${utils.formatting.formatNumberWithCommas(
-        ethers.utils.formatEther(stats.inPlay)
+        ethers.formatEther(stats.inPlay)
       )}`
     : undefined;
 
   const formattedProfits = stats?.pnl
     ? `$${utils.formatting.formatNumberWithCommas(
-        ethers.utils.formatEther(stats.pnl)
+        ethers.formatEther(stats.pnl)
       )}`
     : undefined;
 

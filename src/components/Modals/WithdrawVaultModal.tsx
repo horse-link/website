@@ -49,7 +49,7 @@ export const WithdrawVaultModal: React.FC<Props> = ({
       setUserAssets({
         value: assets,
         decimals,
-        formatted: ethers.utils.formatUnits(assets, decimals)
+        formatted: ethers.formatUnits(assets, decimals)
       });
     })();
   }, [signer, address, shouldRefetch]);
@@ -93,7 +93,7 @@ export const WithdrawVaultModal: React.FC<Props> = ({
   const onClickWithdraw = async () => {
     if (!withdrawAmount || !userAssets || !signer) return;
 
-    const amount = ethers.utils.parseUnits(withdrawAmount, userAssets.decimals);
+    const amount = ethers.parseUnits(withdrawAmount, userAssets.decimals);
     setTxHash(undefined);
     setError(undefined);
 

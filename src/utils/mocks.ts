@@ -3,24 +3,25 @@ import { Bet, BetResult } from "../types/subgraph";
 import { Back } from "../types/meets";
 import { SignedBetDataResponse } from "../types/bets";
 import { Meet, Race, RaceStatus } from "horselink-sdk";
+import { zeroAddress, zeroHash } from "viem";
 
 export const getMockBet = (): Bet => ({
-  id: `BET_${ethers.ZeroAddress}_0`,
-  propositionId: ethers.ZeroHash,
-  marketId: ethers.ZeroHash,
-  asset: ethers.ZeroAddress,
+  id: `BET_${zeroAddress}_0`,
+  propositionId: zeroHash,
+  marketId: zeroHash,
+  asset: zeroAddress,
   amount: 0n,
   payout: 0n,
   payoutAt: 30 * 60,
-  market: ethers.ZeroAddress,
-  owner: ethers.ZeroAddress,
-  recipient: ethers.ZeroAddress,
+  market: zeroAddress,
+  owner: zeroAddress,
+  recipient: zeroAddress,
   settled: false,
   result: BetResult.INPLAY,
   createdAt: 0,
   settledAt: 0,
-  createdAtTx: ethers.ZeroHash,
-  settledAtTx: ethers.ZeroHash,
+  createdAtTx: zeroHash,
+  settledAtTx: zeroHash,
   refunded: false
 });
 

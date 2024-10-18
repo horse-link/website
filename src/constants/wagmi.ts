@@ -1,106 +1,113 @@
-import { createConnector } from '@wagmi/core'
+import { createConnector } from "@wagmi/core";
 
-import { Network } from "../types/general"
-import { AlchemyProvider, Wallet } from 'ethers'
-import { Chain } from 'wagmi/chains'
-import { type Address } from 'viem'
+import { Network } from "../types/general";
+import { AlchemyProvider, Wallet } from "ethers";
+import { Chain } from "wagmi/chains";
+import { type Address } from "viem";
 
 export type HorseLinkWalletOptions = {
-  wallet: Wallet
-  setChain: (chain: Network) => void
-  chains: Chain[]
-}
+  wallet: Wallet;
+  setChain: (chain: Network) => void;
+  chains: Chain[];
+};
 
-export const horseLinkWalletConnector = ({ wallet, setChain, chains }: HorseLinkWalletOptions) => {
-  return createConnector((config) => ({
-    id: 'horselinkwallet',
-    name: 'HorseLink Wallet',
-    type: 'horselinkwallet',
-    
+export const horseLinkWalletConnector = ({
+  wallet,
+  setChain,
+  chains
+}: HorseLinkWalletOptions) => {
+  return createConnector(config => ({
+    id: "horselinkwallet",
+    name: "HorseLink Wallet",
+    type: "horselinkwallet",
+
     connect: async ({ chainId }) => {
-      const provider = await getProvider()
-      const account = await getAccount()
-      const id = chainId || (await getChainId())
-      
-      return { account, chain: { id, unsupported: isChainUnsupported(id) }, provider }
+      const provider = await getProvider();
+      const account = await getAccount();
+      const id = chainId || (await getChainId());
+
+      return {
+        account,
+        chain: { id, unsupported: isChainUnsupported(id) },
+        provider
+      };
     },
-    
+
     disconnect: async () => {
-      const provider = await getProvider()
-      provider.removeAllListeners()
+      const provider = await getProvider();
+      provider.removeAllListeners();
     },
-    
+
     getAccount: async () => {
-      return wallet.address
+      return wallet.address;
     },
-    
-    
+
     // getProvider: async () => {
     //   return wallet.provider as AlchemyProvider
     // },
-    
+
     getSigner: async () => {
-      return wallet
+      return wallet;
     },
-    
+
     isAuthorized: async () => {
       try {
-        const account = await getAccount()
-        return !!account
+        const account = await getAccount();
+        return !!account;
       } catch {
-        return false
+        return false;
       }
     },
-    
-    switchChain: async (chain) => {
-      const newChain = chains.find(c => c.id === chain.chainId)
-      if (!newChain) throw new Error(`Unsupported chain id: ${chain.chainId}`)
-      
-      setChain(newChain as Network) // Assuming Network is compatible with Chain
+
+    switchChain: async chain => {
+      const newChain = chains.find(c => c.id === chain.chainId);
+      if (!newChain) throw new Error(`Unsupported chain id: ${chain.chainId}`);
+
+      setChain(newChain as Network); // Assuming Network is compatible with Chain
       return {
         id: newChain.id,
         name: newChain.name,
         network: newChain.id,
         nativeCurrency: newChain.nativeCurrency,
         rpcUrls: newChain.rpcUrls
-      }
+      };
     },
-    
-    onAccountsChanged: (accounts) => {
+
+    onAccountsChanged: accounts => {
       if (accounts.length === 0) {
-        config.emitter.emit('disconnect')
+        config.emitter.emit("disconnect");
       } else {
-        config.emitter.emit('change', { accounts: accounts })
+        config.emitter.emit("change", { accounts: accounts });
       }
     },
-    
-    onChainChanged: (chain) => {
-      const chainId = Number(chain)
-      config.emitter.emit('change', { chainId  })
+
+    onChainChanged: chain => {
+      const chainId = Number(chain);
+      config.emitter.emit("change", { chainId });
     },
-    
+
     onDisconnect: () => {
-      config.emitter.emit('disconnect')
-    },
-  }))
-  
+      config.emitter.emit("disconnect");
+    }
+  }));
+
   function isChainUnsupported(chainId: number): boolean {
-    return !chains.map(c => c.id).includes(chainId)
+    return !chains.map(c => c.id).includes(chainId);
   }
-  
+
   async function getAccount() {
-    return wallet.address
+    return wallet.address;
   }
-  
+
   async function getChainId() {
-    const provider: AlchemyProvider = await getProvider()
-    return provider.getNetwork().then((network) => network.chainId)
+    const provider: AlchemyProvider = await getProvider();
+    return provider.getNetwork().then(network => network.chainId);
   }
-  
+
   async function getProvider() {
-    return wallet.provider as AlchemyProvider
+    return wallet.provider as AlchemyProvider;
   }
-}
+};
 /*
 // Below is the existing connector that we are refactoring to use the new wagmi connector system
 type Options = {
